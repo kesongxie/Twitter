@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11761" systemVersion="15G31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" launchScreen="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="hmB-Ml-JE0">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11757"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--View Controller-->
+        <scene sceneID="Cst-Su-kAP">
+            <objects>
+                <viewController id="hmB-Ml-JE0" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="iMu-gj-HO0"/>
+                        <viewControllerLayoutGuide type="bottom" id="KUo-fb-5t2"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="5EE-BY-LVk">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="TwitterLogo" translatesAutoresizingMaskIntoConstraints="NO" id="Kca-Hh-Lyt">
+                                <rect key="frame" x="127" y="273" width="120" height="120"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="120" id="APZ-DE-3iH"/>
+                                    <constraint firstAttribute="width" constant="120" id="S7L-HV-Pt2"/>
+                                </constraints>
+                            </imageView>
+                        </subviews>
+                        <color key="backgroundColor" red="0.1137254902" green="0.5568627451" blue="0.93333333330000001" alpha="1" colorSpace="calibratedRGB"/>
+                        <constraints>
+                            <constraint firstItem="Kca-Hh-Lyt" firstAttribute="centerX" secondItem="5EE-BY-LVk" secondAttribute="centerX" id="ZdV-cd-0ht"/>
+                            <constraint firstItem="Kca-Hh-Lyt" firstAttribute="centerY" secondItem="5EE-BY-LVk" secondAttribute="centerY" id="lnh-LR-oyC"/>
+                        </constraints>
+                    </view>
+                    <navigationItem key="navigationItem" id="QpM-9W-wvF"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="kox-Fd-Lol" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-114" y="152"/>
+        </scene>
+    </scenes>
+    <resources>
+        <image name="TwitterLogo" width="120" height="120"/>
+    </resources>
+</document>
