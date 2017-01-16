@@ -70,6 +70,7 @@ class HomeViewController: UIViewController {
     }
     
     func logoutBtnTapped(sender: UIBarButtonItem){
+        UserDefaults.resetStandardUserDefaults()
         TwitterClient.shareInstance?.deauthorize()
         self.dismiss(animated: true, completion: {
             let logOutNotification = Notification(name: TwitterClient.TwitterClientDidDeAuthenticateNotificationName, object: self, userInfo: nil)

@@ -124,12 +124,20 @@ class TwitterClient{
         }
         retweetEndPoint = retweetEndPoint + ".json"
         let _ = TwitterClient.shareInstance?.post(retweetEndPoint, parameters: nil, progress: nil, success: { (task: URLSessionDataTask, response:Any?) in
-            if let tweetDict = response as? [String: Any], let originalTweet = tweetDict["retweeted_status"] as? [String: Any]{
-                    let tweet = Tweet(tweetDict: originalTweet)
-                callBack(tweet, nil)
-            }else{
-                callBack(nil, nil)
-            }
+                if let tweetDict = response as? [String: Any]{
+                    var tweet: Tweet?
+                    if option == .create{
+                        if let originalTweetDict = tweetDict["retweeted_status"] as? [String: Any]{
+                            tweet = Tweet(tweetDict: originalTweetDict)
+                        }
+                    }else{
+                         tweet = Tweet(tweetDict: tweetDict)
+                    }
+                    callBack(tweet, nil)
+                }else{
+                    callBack(nil, nil)
+                }
+            
         }, failure: { (task: URLSessionDataTask?, error:Error) in
             print(error.localizedDescription)
             callBack(nil, error)
@@ -155,7 +163,6 @@ class TwitterClient{
             print(error.localizedDescription)
             callBack(nil, error)
         })
-
     }
     
     

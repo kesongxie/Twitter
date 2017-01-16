@@ -115,8 +115,10 @@ class TweetTableViewCell: UITableViewCell {
     
     func updateRetweetIconUI(){
         if self.tweet.retweeted{
+            print("green")
             self.retweetIconImageView.image = UIImage(named: "retweet-icon-green")
         }else{
+            print("default")
             self.retweetIconImageView.image = UIImage(named: "retweet-icon")
         }
         
