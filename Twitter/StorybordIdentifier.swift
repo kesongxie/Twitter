@@ -10,6 +10,7 @@ import Foundation
 
 struct StorybordIdentifier{
     static let HomeViewController = "HomeViewController"
+    static let HomeNavigationViewControllerIden = "HomeNavigationViewController"
     static let LogInViewControllerIden = "LogInViewController"
 
 }

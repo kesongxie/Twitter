@@ -21,20 +21,48 @@ class LogInViewController: UIViewController {
         TwitterClient.logInWithTwitter()
     }
     
+    var statusBarStyle: UIStatusBarStyle?
+    
+    let animator = HorizontalSliderAnimator()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.statusBarStyle = UIStatusBarStyle.lightContent
         self.scrollView.alwaysBounceVertical = true
     }
-
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
     
     override var preferredStatusBarStyle: UIStatusBarStyle{
-        return .lightContent
+        return self.statusBarStyle!
     }
-
+    
+    
+    override var preferredStatusBarUpdateAnimation: UIStatusBarAnimation{
+        return .fade
+    }
     
 }
+
+
+extension LogInViewController: UIViewControllerTransitioningDelegate{
+    func animationController(forPresented presented: UIViewController, presenting: UIViewController, source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+        self.statusBarStyle = UIStatusBarStyle.default
+        self.view.setNeedsLayout()
+        UIView.animate(withDuration: 0.3) {
+            self.view .layoutIfNeeded()
+            self.setNeedsStatusBarAppearanceUpdate()
+        }
+        return animator
+    }
+    
+    func animationController(forDismissed dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+        return animator
+    }
+    
+}
+
 

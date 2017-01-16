@@ -66,7 +66,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                             self.currentUser?.timeline = tweets
                             let user = [AppDelegate.FinishedLogInUserInfoKey: self.currentUser]
                             let finishedLogInNotification = Notification(name: AppDelegate.FinishedLogInNotificationName, object: self, userInfo: user)
-                            NotificationCenter.default.post(finishedLogInNotification)
+                            DispatchQueue.main.async {
+                                NotificationCenter.default.post(finishedLogInNotification)
+                            }
                         })
                     }
                 })

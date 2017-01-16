@@ -13,12 +13,13 @@ fileprivate let reuseIden = "TweetCell"
 class HomeViewController: UIViewController {
     
     @IBOutlet weak var tableView: UITableView!
+    @IBOutlet weak var footerLoadingView: UIView!
+
     
     let refreshControl = UIRefreshControl()
-    
     var logoutBtn: UIBarButtonItem?
-    
     var user: User?
+    var isLoadingData: Bool = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -28,14 +29,17 @@ class HomeViewController: UIViewController {
         self.tableView.estimatedRowHeight = self.tableView.rowHeight
         self.tableView.rowHeight = UITableViewAutomaticDimension
         
+        self.navigationController?.navigationBar.barTintColor = UIColor.white
+        let image = UIImage(named: "TwitterLogoBlue")
+        let logoImageView = UIImageView(frame: CGRect(x: 0, y: 0, width: 30, height: 30))
+        logoImageView.contentMode = .scaleAspectFit
+        logoImageView.image = image
+        self.navigationItem.titleView = logoImageView
+        
         self.setLogoutBtn()
         self.refreshControl.addTarget(self, action: #selector(refreshDragged(sender:)), for: .valueChanged)
         self.tableView.refreshControl = self.refreshControl
-        if self.user?.timeline != nil{
-            DispatchQueue.main.async {
-                self.tableView.reloadData()
-            }
-        }
+        refreshTimeLine()
     }
 
     override func didReceiveMemoryWarning() {
@@ -45,6 +49,10 @@ class HomeViewController: UIViewController {
     
     
     func refreshDragged(sender: UIRefreshControl){
+        self.refreshTimeLine()
+    }
+    
+    func refreshTimeLine(){
         TwitterClient.getHomeTimeLine { (tweets, error) in
             self.user?.timeline = tweets
             DispatchQueue.main.async {
@@ -52,6 +60,7 @@ class HomeViewController: UIViewController {
                 self.tableView.reloadData()
             }
         }
+
     }
     
     func setLogoutBtn(){
@@ -61,13 +70,41 @@ class HomeViewController: UIViewController {
     }
     
     func logoutBtnTapped(sender: UIBarButtonItem){
-        
+        TwitterClient.shareInstance?.deauthorize()
+        self.dismiss(animated: true, completion: {
+            let logOutNotification = Notification(name: TwitterClient.TwitterClientDidDeAuthenticateNotificationName, object: self, userInfo: nil)
+            NotificationCenter.default.post(logOutNotification)
+        })
     }
     
+    func loadMoreEntries(){
+        TwitterClient.loadMoreTweet { (newTweets, error) in
+            if let newTweets = newTweets, newTweets.count > 0{
+                self.isLoadingData = false
+                self.user?.timeline?.append(contentsOf: newTweets)
+                DispatchQueue.main.async {
+                    self.footerLoadingView.isHidden = true
+                    self.tableView.reloadData()
+                }
+            }else{
+                self.footerLoadingView.isHidden = true
+            }
+        }
+    }
+    
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        if(!self.isLoadingData){
+            if(scrollView.contentOffset.y > scrollView.contentSize.height - self.view.frame.size.height){
+                self.isLoadingData = true
+                self.loadMoreEntries()
+            }
+        }
+    }
+    
+
     override var preferredStatusBarStyle: UIStatusBarStyle{
         return .default
     }
-
 
 }
 

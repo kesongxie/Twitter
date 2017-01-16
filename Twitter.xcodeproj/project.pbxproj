@@ -21,7 +21,8 @@
 		98CF7F231E2BFE2300BACA5B /* Ultility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98CF7F221E2BFE2300BACA5B /* Ultility.swift */; };
 		98CF7F271E2C339E00BACA5B /* PrepareViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98CF7F261E2C339E00BACA5B /* PrepareViewController.swift */; };
 		98CF7F291E2C33CE00BACA5B /* StorybordIdentifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98CF7F281E2C33CE00BACA5B /* StorybordIdentifier.swift */; };
-		98CF7F2B1E2C3B8D00BACA5B /* PrepareNavigationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98CF7F2A1E2C3B8D00BACA5B /* PrepareNavigationViewController.swift */; };
+		98CF7F351E2C464E00BACA5B /* HorizontalSliderAnimator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98CF7F341E2C464E00BACA5B /* HorizontalSliderAnimator.swift */; };
+		98CF7F371E2C4B0E00BACA5B /* HomeNavigationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98CF7F361E2C4B0E00BACA5B /* HomeNavigationViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -41,7 +42,8 @@
 		98CF7F221E2BFE2300BACA5B /* Ultility.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Ultility.swift; sourceTree = "<group>"; };
 		98CF7F261E2C339E00BACA5B /* PrepareViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PrepareViewController.swift; sourceTree = "<group>"; };
 		98CF7F281E2C33CE00BACA5B /* StorybordIdentifier.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StorybordIdentifier.swift; sourceTree = "<group>"; };
-		98CF7F2A1E2C3B8D00BACA5B /* PrepareNavigationViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PrepareNavigationViewController.swift; sourceTree = "<group>"; };
+		98CF7F341E2C464E00BACA5B /* HorizontalSliderAnimator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HorizontalSliderAnimator.swift; sourceTree = "<group>"; };
+		98CF7F361E2C4B0E00BACA5B /* HomeNavigationViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeNavigationViewController.swift; sourceTree = "<group>"; };
 		CE8AD55FDF7B7B0C573F58F8 /* Pods-Twitter.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Twitter.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Twitter/Pods-Twitter.debug.xcconfig"; sourceTree = "<group>"; };
 		D746C32F319A255CF5413490 /* Pods-Twitter.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Twitter.release.xcconfig"; path = "Pods/Target Support Files/Pods-Twitter/Pods-Twitter.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -133,6 +135,7 @@
 			children = (
 				98CF7F1C1E2BFBCF00BACA5B /* TweetTableViewCell.swift */,
 				98CF7F1F1E2BFBFA00BACA5B /* HomeViewController.swift */,
+				98CF7F361E2C4B0E00BACA5B /* HomeNavigationViewController.swift */,
 			);
 			name = Home;
 			sourceTree = "<group>";
@@ -140,6 +143,7 @@
 		98CF7F211E2BFE1600BACA5B /* Ultility */ = {
 			isa = PBXGroup;
 			children = (
+				98CF7F341E2C464E00BACA5B /* HorizontalSliderAnimator.swift */,
 				98CF7F221E2BFE2300BACA5B /* Ultility.swift */,
 			);
 			name = Ultility;
@@ -148,7 +152,6 @@
 		98CF7F2C1E2C3BA300BACA5B /* Prepare */ = {
 			isa = PBXGroup;
 			children = (
-				98CF7F2A1E2C3B8D00BACA5B /* PrepareNavigationViewController.swift */,
 				98CF7F261E2C339E00BACA5B /* PrepareViewController.swift */,
 			);
 			name = Prepare;
@@ -317,11 +320,12 @@
 				98CF7F031E2B577B00BACA5B /* AppDelegate.swift in Sources */,
 				98CF7F1B1E2BF19600BACA5B /* User.swift in Sources */,
 				98CF7F191E2BEFF100BACA5B /* Tweet.swift in Sources */,
-				98CF7F2B1E2C3B8D00BACA5B /* PrepareNavigationViewController.swift in Sources */,
 				98CF7F271E2C339E00BACA5B /* PrepareViewController.swift in Sources */,
 				98CF7F291E2C33CE00BACA5B /* StorybordIdentifier.swift in Sources */,
+				98CF7F371E2C4B0E00BACA5B /* HomeNavigationViewController.swift in Sources */,
 				98CF7F201E2BFBFA00BACA5B /* HomeViewController.swift in Sources */,
 				98CF7F1D1E2BFBCF00BACA5B /* TweetTableViewCell.swift in Sources */,
+				98CF7F351E2C464E00BACA5B /* HorizontalSliderAnimator.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

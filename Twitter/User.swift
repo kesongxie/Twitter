@@ -19,11 +19,26 @@ class User{
     let description: String?
     let profile_banner_url: String?
     let profile_image_url: String?
+    
+    var lowesLoadedtTimeLineId: UInt{
+        get{
+            
+            if let timeline = self.timeline{
+                let idList: [UInt] = timeline.map({ (tweet) -> UInt in
+                    return tweet.id
+                })
+                return idList.min()!
+            }
+            return UInt.max
+        }
+    }
+    
     var timeline: [Tweet]?{
         didSet{
             self.syncCurrentUserData()
         }
     }
+    
     init(userDict: [String: Any]) {
         self.userDict = userDict
         self.id = userDict["id"] as? UInt
@@ -55,6 +70,7 @@ class User{
         self.saveCurrentUserData()
     }
     
+    
     class func getCurrentUser() -> User?{
         if let userData = UserDefaults.standard.object(forKey: currentUserKey) as? Data{
             do{
@@ -76,6 +92,7 @@ class User{
         }
         return nil
     }
+
 }
 
 
