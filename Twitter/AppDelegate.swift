@@ -20,7 +20,19 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 
     var window: UIWindow?
-    var currentUser: User?
+    var currentUser: User?{
+        didSet{
+            if accounts.isEmpty{
+                self.accounts.append(self.currentUser!)
+            }else{
+                if let index = self.accounts.index(where: {$0.screen_name == self.currentUser!.screen_name}){
+                    self.accounts.remove(at: index)
+                    self.accounts.insert(self.currentUser!, at: 0)
+                }
+            }
+        }
+    }
+    var accounts = [User]()
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         if let user = User.getCurrentUser(){
@@ -66,9 +78,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                             self.currentUser?.timeline = tweets
                             let user = [AppDelegate.FinishedLogInUserInfoKey: self.currentUser]
                             let finishedLogInNotification = Notification(name: AppDelegate.FinishedLogInNotificationName, object: self, userInfo: user)
-                            DispatchQueue.main.async {
-                                NotificationCenter.default.post(finishedLogInNotification)
-                            }
+                            NotificationCenter.default.post(finishedLogInNotification)
+                            
                         })
                     }
                 })

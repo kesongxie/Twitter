@@ -22,8 +22,12 @@ class HomeNavigationViewController: UINavigationController {
     override var preferredStatusBarStyle: UIStatusBarStyle{
         return .default
     }
-        
-
+    
+    override var childViewControllerForStatusBarStyle: UIViewController?{
+        return self.viewControllers.first
+    }
+    
+    
     /*
     // MARK: - Navigation
 

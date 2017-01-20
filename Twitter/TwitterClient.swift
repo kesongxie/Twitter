@@ -19,21 +19,26 @@ class TwitterClient{
         case destroy
     }
     
-    static let oAuthURLScheme = "twitter"
+    static let oAuthURLScheme = "twitter-codepath"
     static let oAuthURLHost = "oauth"
     static let oAuthBaseURL = "https://api.twitter.com"
-    static let consumerKey = "CPTT9Mc1RC7f6WtmsOPVCBycG"
-    static let consumerSecret = "4BdaMieYG9CcT9Bg3WrEG89QGZaDakJDDIaqxDnkWsPTjE5Jxb"
+    static let consumerKey = "nmhiqaGusZzzHB65sToh5BIyg"
+    static let consumerSecret = "fk0RVOSp3uF0M3dFjO1XStaByYKJw50aqKzKjX4wu5mqXDYNlM"
     static let accessTokenPath = "oauth/access_token"
     static let requestTokenPath = "oauth/request_token"
     static let authorizePath = "oauth/authorize"
     static let authUserEndPoint = "https://api.twitter.com/1.1/account/verify_credentials.json"
     static let homeTimeLineEndPoint = "https://api.twitter.com/1.1/statuses/home_timeline.json"
+    static let userProfieTimeLineEndPoint = "https://api.twitter.com/1.1/statuses/user_timeline.json?screen_name="
+
     static let createFavorTweetEndPoint = "https://api.twitter.com/1.1/favorites/create.json?id="
     static let destroyFavorTweetEndPoint = "https://api.twitter.com/1.1/favorites/destroy.json?id="
     static let retweetCreateEndPoint = "https://api.twitter.com/1.1/statuses/retweet/" //append .json extension after append the tweet id
     static let retweetDestroyEndPoint = "https://api.twitter.com/1.1/statuses/unretweet/"
     static let TwitterClientDidDeAuthenticateNotificationName = Notification.Name("TwitterClientDidDeAuthenticateNotification")
+    static let sendTweetEndPoint = "https://api.twitter.com/1.1/statuses/update.json?status="
+    static let friendShipLookUpEndPoint = "https://api.twitter.com/1.1/friendships/lookup.json"
+    
 
     static let shareInstance = BDBOAuth1SessionManager(baseURL: URL(string: TwitterClient.oAuthBaseURL), consumerKey: TwitterClient.consumerKey, consumerSecret: TwitterClient.consumerSecret)
     
@@ -91,6 +96,23 @@ class TwitterClient{
             callBack(nil, error)
         })
     }
+    
+    class func getUserProfileTimeLine(userScreenName: String, callBack: @escaping (_ response: [Tweet]?, _ error: Error? ) -> Void){
+        let fetchURLString = self.userProfieTimeLineEndPoint + userScreenName
+        let _ = TwitterClient.shareInstance?.get(fetchURLString, parameters: nil, progress: nil, success: { (task: URLSessionDataTask, response:Any?) in
+            if let timelineDict = response as? [[String: Any]]{
+                let tweets = timelineDict.map{(element) -> Tweet in
+                    return Tweet(tweetDict: element)
+                }
+                callBack(tweets, nil)
+            }
+        }, failure: { (task: URLSessionDataTask?, error:Error) in
+            print(error.localizedDescription)
+            callBack(nil, error)
+        })
+    }
+
+    
     
     
     class func toggleFavorTweet(tweet: Tweet, option: FavorToggleOption,  callBack: @escaping (_ response: Tweet?, _ error: Error? ) -> Void){
@@ -165,6 +187,44 @@ class TwitterClient{
         })
     }
     
+    class func sendTweet(text: String, callBack: @escaping (_ response: Tweet?, _ error: Error? ) -> Void){
+        guard let encodedText = text.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed) else{
+            callBack(nil, nil)
+            return
+        }
+        let urlString = TwitterClient.sendTweetEndPoint + encodedText
+        let _ = TwitterClient.shareInstance?.post(urlString, parameters: nil, progress: nil, success: { (task: URLSessionDataTask, response:Any?) in
+            if let tweetDict = response as? [String: Any]{
+                let tweet = Tweet(tweetDict: tweetDict)
+                App.delegate?.currentUser?.timeline?.insert(tweet, at: 0)
+                callBack(tweet, nil)
+            }else{
+                callBack(nil, nil)
+            }
+        }, failure: { (task: URLSessionDataTask?, error:Error) in
+            print(error.localizedDescription)
+            callBack(nil, error)
+        })
+    }
     
+    class func isFollowingUser(userId: UInt,  callBack: @escaping (_ response: Bool?, _ error: Error? ) -> Void){
+        let userIdDict = ["user_id": userId]
+        let _ = TwitterClient.shareInstance?.get(TwitterClient.friendShipLookUpEndPoint, parameters: userIdDict, progress: nil, success: { (task: URLSessionDataTask, response:Any?) in
+            if let friendShipDict = (response as? [[String: Any]])?.first{
+                if let connection = friendShipDict["connections"] as? [String]{
+                    callBack((connection.index(of: "following") != nil), nil)
+                }else{
+                    callBack(nil, nil)
+                }
+            }else{
+                callBack(nil, nil)
+            }
+        }, failure: { (task: URLSessionDataTask?, error:Error) in
+            print(error.localizedDescription)
+            callBack(nil, error)
+        })
 
+    }
+    
+    
 }

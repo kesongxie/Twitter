@@ -18,6 +18,7 @@ class HorizontalSliderAnimator: NSObject, UIViewControllerAnimatedTransitioning 
     
     func animateTransition(using transitionContext: UIViewControllerContextTransitioning) {
         let containerView = transitionContext.containerView
+        containerView.backgroundColor = UIColor.blue
         guard let toView = transitionContext.viewController(forKey: .to)?.view else{
             return
         }
@@ -37,6 +38,7 @@ class HorizontalSliderAnimator: NSObject, UIViewControllerAnimatedTransitioning 
         }else{
             toViewStartFrame = CGRect(x: 0, y: 0, width: containerView.frame.size.width, height: containerView.frame.size.height)
             fromViewFinalFrame = CGRect(x: containerView.frame.size.width, y: 0, width: containerView.frame.size.width, height: containerView.frame.size.height)
+            containerView.addSubview(toView)
             containerView.addSubview(fromView)
         }
         toView.frame = toViewStartFrame;

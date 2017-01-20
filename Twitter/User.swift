@@ -17,8 +17,24 @@ class User{
     let name: String!
     let screen_name: String!
     let description: String?
-    let profile_banner_url: String?
-    let profile_image_url: String?
+    let profile_banner_url_string: String?
+    let profile_image_url_string: String?
+    
+    var profileImageURL: URL?{
+        guard var urlString = self.profile_image_url_string else{
+            return nil
+        }
+        urlString = urlString.replacingOccurrences(of: "_normal", with: "")
+        return URL(string: urlString)
+    }
+    
+    var profileBannerURL: URL?{
+        guard var urlString = self.profile_banner_url_string else{
+            return nil
+        }
+        urlString = urlString + "/600x200"
+        return URL(string: urlString)
+    }
     
     var lowesLoadedtTimeLineId: UInt{
         get{
@@ -39,14 +55,22 @@ class User{
         }
     }
     
+    var followingCount: Int{
+        return self.userDict["friends_count"] as! Int
+    }
+    
+    var followerCount: Int{
+        return self.userDict["followers_count"] as! Int
+    }
+    
     init(userDict: [String: Any]) {
         self.userDict = userDict
         self.id = userDict["id"] as? UInt
         self.name = userDict["name"] as? String
         self.screen_name = userDict["screen_name"] as? String
         self.description = userDict["description"] as? String
-        self.profile_banner_url = userDict["profile_banner_url"] as? String
-        self.profile_image_url = userDict["profile_image_url"] as? String
+        self.profile_banner_url_string = userDict["profile_banner_url"] as? String
+        self.profile_image_url_string = userDict["profile_image_url"] as? String
     }
     
     func saveCurrentUserData(){
@@ -92,6 +116,8 @@ class User{
         }
         return nil
     }
+    
+    
 
 }
 

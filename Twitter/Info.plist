@@ -25,7 +25,7 @@
 			<string>com.kesongxie.Twitter</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>twitter</string>
+				<string>twitter-codepath</string>
 			</array>
 		</dict>
 	</array>
@@ -46,13 +46,13 @@
 	<array>
 		<string>armv7</string>
 	</array>
+	<key>UIStatusBarHidden</key>
+	<true/>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
-	<key>UIStatusBarHidden</key>
-	<true/>
 </dict>
 </plist>

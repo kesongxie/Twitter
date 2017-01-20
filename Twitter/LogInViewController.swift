@@ -40,7 +40,6 @@ class LogInViewController: UIViewController {
         return self.statusBarStyle!
     }
     
-    
     override var preferredStatusBarUpdateAnimation: UIStatusBarAnimation{
         return .fade
     }

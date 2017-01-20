@@ -37,11 +37,20 @@ class TweetTableViewCell: UITableViewCell {
     
     @IBOutlet weak var favorStackView: UIStackView!
     
+    @IBOutlet weak var mediaPhotoImageView: UIImageView!{
+        didSet{
+            self.mediaPhotoImageView.layer.cornerRadius = 4.0
+        }
+    }
+    
+    @IBOutlet weak var mediaHeightConstraint: NSLayoutConstraint!
+    
     var tweet: Tweet!{
         didSet{
-            if let userProfileURL = URL(string: self.tweet.user.profile_image_url!){
+            if let userProfileURL = self.tweet.user.profileImageURL{
                 self.userImageView.setImageWith(userProfileURL)
             }
+            
             self.nameLabel.text = tweet.user.name
             self.screenNameLabel.text = "@" + self.tweet.user.screen_name
             self.tweetTextLabel.text = self.tweet.text
@@ -58,6 +67,14 @@ class TweetTableViewCell: UITableViewCell {
             self.retweetStackView.addGestureRecognizer(retweetTap)
             self.updateFavorIconUI()
             self.updateRetweetIconUI()
+            
+            self.mediaPhotoImageView.image = nil
+            if let photo = self.tweet.photos?.first{
+                self.mediaHeightConstraint.constant = self.mediaPhotoImageView.frame.size.width * photo.size.height / photo.size.width
+                self.mediaPhotoImageView.setImageWith(photo.photoURL)
+            }else{
+                 self.mediaHeightConstraint.constant = 0
+            }
         }
     }
     
@@ -71,7 +88,7 @@ class TweetTableViewCell: UITableViewCell {
 
         // Configure the view for the selected state
     }
-    
+
     func favorStackViewTapped(gesture: UITapGestureRecognizer){
         var favorToggleOption: TwitterClient.FavorToggleOption
         if self.tweet.favored{
@@ -115,14 +132,13 @@ class TweetTableViewCell: UITableViewCell {
     
     func updateRetweetIconUI(){
         if self.tweet.retweeted{
-            print("green")
             self.retweetIconImageView.image = UIImage(named: "retweet-icon-green")
         }else{
-            print("default")
             self.retweetIconImageView.image = UIImage(named: "retweet-icon")
         }
         
     }
+    
 
     
 

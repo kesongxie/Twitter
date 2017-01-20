@@ -14,23 +14,17 @@ class PrepareViewController: UIViewController {
     
     var isLoggedInScreenPresented = false
     
+    var statusBarStyle: UIStatusBarStyle = .lightContent
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         NotificationCenter.default.addObserver(self, selector: #selector(navigateToHomeAfterLoggedIn(notification:)), name: AppDelegate.FinishedLogInNotificationName, object: nil)
-        
-        
         NotificationCenter.default.addObserver(self, selector: #selector(didLogout(notification:)), name: TwitterClient.TwitterClientDidDeAuthenticateNotificationName, object: nil)
-        
-        let storyboard = UIStoryboard(name: "Main", bundle: nil)
-        if let user = User.getCurrentUser(){
-            if let homeNVC =  storyboard.instantiateViewController(withIdentifier: StorybordIdentifier.HomeNavigationViewControllerIden) as? HomeNavigationViewController{
-                if let homeVC = homeNVC.viewControllers.first as? HomeViewController{
-                    homeVC.user = user
-                    homeNVC.modalPresentationStyle = .custom
-                    homeNVC.transitioningDelegate = self
-                    DispatchQueue.main.async {
-                        self.present(homeNVC, animated: true, completion: nil)
-                    }
+        if let _ = User.getCurrentUser(){
+            if let tabBarVC = App.mainStoryBoard.instantiateViewController(withIdentifier: StorybordIdentifier.TabBarViewControllerIden) as? TabBarViewController{
+                tabBarVC.transitioningDelegate = self
+                DispatchQueue.main.async {
+                    self.present(tabBarVC, animated: true, completion: nil)
                 }
             }
         }else{
@@ -45,17 +39,10 @@ class PrepareViewController: UIViewController {
     
     
     func navigateToHomeAfterLoggedIn(notification: Notification){
-        let storyboard = UIStoryboard(name: "Main", bundle: nil)
-        if let user = notification.userInfo![AppDelegate.FinishedLogInUserInfoKey] as? User{
-            if let homeNVC =  storyboard.instantiateViewController(withIdentifier: StorybordIdentifier.HomeNavigationViewControllerIden) as? HomeNavigationViewController{
-                if let homeVC = homeNVC.viewControllers.first as? HomeViewController{
-                    homeVC.user = user
-                    homeNVC.modalPresentationStyle = .custom
-                    homeNVC.transitioningDelegate = (self.presentedViewController as! LogInViewController)
-                    DispatchQueue.main.async {
-                        self.presentedViewController?.present(homeNVC, animated: true, completion: nil)
-                    }
-                }
+        DispatchQueue.main.async {
+            if let tabBarVC = App.mainStoryBoard.instantiateViewController(withIdentifier: StorybordIdentifier.TabBarViewControllerIden) as? TabBarViewController{
+                tabBarVC.transitioningDelegate = self
+                    self.presentedViewController?.present(tabBarVC, animated: true, completion: nil)
             }
         }
     }
@@ -81,16 +68,24 @@ class PrepareViewController: UIViewController {
     }
     
     override var preferredStatusBarStyle: UIStatusBarStyle{
-        return .lightContent
+        return self.statusBarStyle
     }
     
     override var preferredStatusBarUpdateAnimation: UIStatusBarAnimation{
         return .fade
     }
+    
+    
 }
 
 extension PrepareViewController: UIViewControllerTransitioningDelegate{
     func animationController(forPresented presented: UIViewController, presenting: UIViewController, source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+        self.statusBarStyle = UIStatusBarStyle.default
+        self.view.setNeedsLayout()
+        UIView.animate(withDuration: 0.3) {
+            self.view .layoutIfNeeded()
+            self.setNeedsStatusBarAppearanceUpdate()
+        }
         return animator
     }
     
