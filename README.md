@@ -42,12 +42,12 @@ The following **optional** features are implemented:
 The following **additional** features are implemented:
 
 - [x] List anything else that you can get done to improve the app functionality!
-- Use custom presentation for presenting view controller to improve user experiece (slide in and out)
-- Log out implmented
-- Animate icons changes after retweet and favor
-- Added tabbar 
-- Added media to tweet
-- Added Following, Edit Profile button based upon the relationship with the profile user
+- [x] Use custom presentation for presenting view controller to improve user experiece (slide in and out)
+- [x] Log out implmented
+- [x] Animate icons changes after retweet and favor
+- [x] Added tabbar 
+- [x] Added media to tweet
+- [x] Added Following, Edit Profile button based upon the relationship with the profile user
 
 Please list two areas of the assignment you'd like to **discuss further with your peers** during the next class (examples include better ways to implement something, how to extend your app in certain ways, etc):
 
