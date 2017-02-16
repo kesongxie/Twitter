@@ -37,4 +37,24 @@ class Ultility: NSObject {
         }
         return output;
     }
+    
+    
+    class func stringifyCount(count: UInt32) -> String{
+        if count >= 1000000{
+            var mod = Int(count / 1000000)
+            if mod == 0{
+                mod = 1
+            }
+            print(String(mod))
+            return String(mod) + "M"
+        }else if count >= 1000{
+            var mod = Int(count / 1000)
+            if mod == 0{
+                mod = 1
+            }
+            return String(mod) + "K"
+        }else{
+            return String(count)
+        }
+    }
 }

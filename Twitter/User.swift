@@ -55,12 +55,21 @@ class User{
         }
     }
     
-    var followingCount: Int{
-        return self.userDict["friends_count"] as! Int
+    var followingCount: UInt32{
+        return self.userDict["friends_count"] as! UInt32
     }
     
-    var followerCount: Int{
-        return self.userDict["followers_count"] as! Int
+    var followingCountString: String{
+        return  Ultility.stringifyCount(count: followingCount)
+    }
+    
+    var followerCount: UInt32{
+        return self.userDict["followers_count"] as! UInt32
+    }
+    
+    
+    var followerCountString: String{
+        return  Ultility.stringifyCount(count: followerCount)
     }
     
     init(userDict: [String: Any]) {

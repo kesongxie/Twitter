@@ -28,36 +28,83 @@ class Tweet{
         return  Ultility.agoString(from:timeStamp ?? "")
     }
     
-    var favoriteCount: UInt{
-        return tweetDict["favorite_count"] as! UInt
+    var favoriteCount: UInt32{
+        return tweetDict["favorite_count"] as! UInt32
+    }
+    
+    var favoriteCountString: String{
+        return  Ultility.stringifyCount(count: self.favoriteCount)
     }
  
-    var retweetCount: UInt{
-        return tweetDict["retweet_count"] as! UInt
+    var retweetCount: UInt32{
+        return tweetDict["retweet_count"] as! UInt32
     }
-
+    
+    
+    var retweetCountString: String{
+        return  Ultility.stringifyCount(count: self.retweetCount)
+    }
+    
     var favored: Bool{
-        return tweetDict["favorited"] as! Bool
+        return self.tweetDict["favorited"] as! Bool
     }
     
     var retweeted: Bool{
-        return tweetDict["retweeted"] as! Bool
+        return self.tweetDict["retweeted"] as! Bool
     }
     
+    var entitiesDict: [String: Any]?{
+        return self.tweetDict["entities"] as? [String: Any]
+    }
+    
+    var mediaArray: [[String: Any]]?{
+        return self.entitiesDict?["media"] as? [[String: Any]]
+    }
+    
+    
+    var embedURLs: [EmbedURL]?{
+        if let embedURLDicts = self.entitiesDict?["urls"] as? [[String: Any]]{
+            return embedURLDicts.map({ (urlDict) -> EmbedURL in
+                return EmbedURL(urlDict: urlDict)
+            })
+        }
+        return nil
+    }
+
+    
+    var userMentions: [UserMention]?{
+        if let mentionsDicts = self.entitiesDict?["user_mentions"] as? [[String: Any]]{
+            return mentionsDicts.map({ (mentionDict) -> UserMention in
+                return UserMention(mentionDict: mentionDict)
+            })
+        }
+        return nil
+    }
+    
+    
+    var hashTags: [HashTag]?{
+        if let hashTags = self.entitiesDict?["hashtags"] as? [[String: Any]]{
+            return hashTags.map({ (tagDict) -> HashTag in
+                return HashTag(tagDict: tagDict)
+            })
+        }
+        return nil
+    }
+
+
+    
     var photos: [TweetPhoto]?{
-        guard  let entitiesDict = tweetDict["entities"] as? [String: Any] else{
+        guard let mediaDictArray = mediaArray else{
             return nil
         }
-        
-        guard let mediaDictArray = entitiesDict["media"] as? [[String: Any]] else{
-            return nil
-        }
-        
         return mediaDictArray.map { (mediaDict) -> TweetPhoto in
             TweetPhoto(photoDict: mediaDict)
         }
     }
 
+    
+    
+    
     var user: User{
         return User(userDict: tweetDict["user"] as! [String: Any])
     }
@@ -65,4 +112,7 @@ class Tweet{
     init(tweetDict: [String: Any]) {
         self.tweetDict = tweetDict
     }
+    
+    
+    
 }

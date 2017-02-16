@@ -15,6 +15,10 @@
 		982C709D1E31377400580860 /* AccountTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 982C709C1E31377400580860 /* AccountTableViewController.swift */; };
 		982C709F1E31379000580860 /* AccountTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 982C709E1E31379000580860 /* AccountTableViewCell.swift */; };
 		983E02B61E304AF60075A4A5 /* TabBarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 983E02B51E304AF60075A4A5 /* TabBarViewController.swift */; };
+		9885FB251E5592C10033E0DE /* EmbedURL.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9885FB241E5592C10033E0DE /* EmbedURL.swift */; };
+		9885FB271E5598770033E0DE /* UserMention.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9885FB261E5598770033E0DE /* UserMention.swift */; };
+		9885FB291E559EFD0033E0DE /* UILabelExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9885FB281E559EFD0033E0DE /* UILabelExtension.swift */; };
+		9885FB2B1E55A2B40033E0DE /* HashTag.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9885FB2A1E55A2B40033E0DE /* HashTag.swift */; };
 		9892E87E1E54187C0098A903 /* UITableViewExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9892E87D1E54187C0098A903 /* UITableViewExtension.swift */; };
 		9892FF9D1E30385600280320 /* ReplyViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9892FF9C1E30385600280320 /* ReplyViewController.swift */; };
 		9892FF9F1E3038C500280320 /* ReplyNavigationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9892FF9E1E3038C500280320 /* ReplyNavigationViewController.swift */; };
@@ -52,6 +56,10 @@
 		982C709C1E31377400580860 /* AccountTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AccountTableViewController.swift; sourceTree = "<group>"; };
 		982C709E1E31379000580860 /* AccountTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AccountTableViewCell.swift; sourceTree = "<group>"; };
 		983E02B51E304AF60075A4A5 /* TabBarViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TabBarViewController.swift; sourceTree = "<group>"; };
+		9885FB241E5592C10033E0DE /* EmbedURL.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EmbedURL.swift; sourceTree = "<group>"; };
+		9885FB261E5598770033E0DE /* UserMention.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserMention.swift; sourceTree = "<group>"; };
+		9885FB281E559EFD0033E0DE /* UILabelExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UILabelExtension.swift; sourceTree = "<group>"; };
+		9885FB2A1E55A2B40033E0DE /* HashTag.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HashTag.swift; sourceTree = "<group>"; };
 		9892E87D1E54187C0098A903 /* UITableViewExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UITableViewExtension.swift; sourceTree = "<group>"; };
 		9892FF9C1E30385600280320 /* ReplyViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReplyViewController.swift; sourceTree = "<group>"; };
 		9892FF9E1E3038C500280320 /* ReplyNavigationViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReplyNavigationViewController.swift; sourceTree = "<group>"; };
@@ -136,6 +144,7 @@
 			children = (
 				9892FFA41E30413200280320 /* UIImageViewExtension.swift */,
 				9892E87D1E54187C0098A903 /* UITableViewExtension.swift */,
+				9885FB281E559EFD0033E0DE /* UILabelExtension.swift */,
 			);
 			name = Extension;
 			sourceTree = "<group>";
@@ -215,6 +224,9 @@
 				98CF7F181E2BEFF100BACA5B /* Tweet.swift */,
 				98CF7F1A1E2BF19600BACA5B /* User.swift */,
 				98C5FFFD1E2F60190095BFFC /* TweetPhoto.swift */,
+				9885FB261E5598770033E0DE /* UserMention.swift */,
+				9885FB241E5592C10033E0DE /* EmbedURL.swift */,
+				9885FB2A1E55A2B40033E0DE /* HashTag.swift */,
 			);
 			name = Model;
 			sourceTree = "<group>";
@@ -421,13 +433,16 @@
 				98CF7F031E2B577B00BACA5B /* AppDelegate.swift in Sources */,
 				98CF7F1B1E2BF19600BACA5B /* User.swift in Sources */,
 				9892FFA81E30459500280320 /* ProfileTableViewController.swift in Sources */,
+				9885FB291E559EFD0033E0DE /* UILabelExtension.swift in Sources */,
 				98CF7F191E2BEFF100BACA5B /* Tweet.swift in Sources */,
 				98C5FFFE1E2F60190095BFFC /* TweetPhoto.swift in Sources */,
 				9892FF9F1E3038C500280320 /* ReplyNavigationViewController.swift in Sources */,
 				9892FFA11E303BAA00280320 /* App.swift in Sources */,
 				98CF7F271E2C339E00BACA5B /* PrepareViewController.swift in Sources */,
+				9885FB271E5598770033E0DE /* UserMention.swift in Sources */,
 				9892FF9D1E30385600280320 /* ReplyViewController.swift in Sources */,
 				98CF7F291E2C33CE00BACA5B /* StorybordIdentifier.swift in Sources */,
+				9885FB251E5592C10033E0DE /* EmbedURL.swift in Sources */,
 				98CF7F371E2C4B0E00BACA5B /* HomeNavigationViewController.swift in Sources */,
 				98CF7F201E2BFBFA00BACA5B /* HomeViewController.swift in Sources */,
 				982C709B1E31373000580860 /* AccountNavigationViewController.swift in Sources */,
@@ -437,6 +452,7 @@
 				98C5FFFA1E2F56240095BFFC /* TweetDetailViewController.swift in Sources */,
 				982C709F1E31379000580860 /* AccountTableViewCell.swift in Sources */,
 				9892E87E1E54187C0098A903 /* UITableViewExtension.swift in Sources */,
+				9885FB2B1E55A2B40033E0DE /* HashTag.swift in Sources */,
 				98CF7F351E2C464E00BACA5B /* HorizontalSliderAnimator.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

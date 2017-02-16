@@ -47,7 +47,6 @@ class PrepareViewController: UIViewController {
     }
     
     func navigateToHomeAfterLoggedIn(notification: Notification){
-        print("recieved notification")
         DispatchQueue.main.async {
             if let tabBarVC = App.mainStoryBoard.instantiateViewController(withIdentifier: StorybordIdentifier.TabBarViewControllerIden) as? TabBarViewController{
                 tabBarVC.transitioningDelegate = self

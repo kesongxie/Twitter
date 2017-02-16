@@ -26,6 +26,9 @@ class PhotoPreviewViewController: UIViewController {
         }
     }
     
+    @IBAction func closeIconTapped(_ sender: UIButton) {
+        self.dismiss(animated: true, completion: nil)
+    }
     override func viewDidLoad() {
         super.viewDidLoad()
         self.scrollView.alwaysBounceVertical = true
@@ -45,7 +48,6 @@ class PhotoPreviewViewController: UIViewController {
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        print(self.scrollView.contentSize)
     }
 
     override var preferredStatusBarStyle: UIStatusBarStyle{
@@ -59,9 +61,10 @@ extension PhotoPreviewViewController: UIScrollViewDelegate{
     }
     
     func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
-        print( scrollView.contentOffset.y)
         if scrollView.contentOffset.y < -60{
             self.dismiss(animated: true, completion: nil)
         }
     }
 }
+
+

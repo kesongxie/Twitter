@@ -66,7 +66,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="3Dp-LV-lJg" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-263.19999999999999" y="857.72113943028489"/>
+            <point key="canvasLocation" x="-2374" y="858"/>
         </scene>
         <!--Log In View Controller-->
         <scene sceneID="tne-QT-ifu">
@@ -154,7 +154,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="396" y="858"/>
+            <point key="canvasLocation" x="-1663" y="858"/>
         </scene>
         <!--Twitter-->
         <scene sceneID="nzJ-dD-GlU">
@@ -216,7 +216,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="ZDe-OZ-OlU" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2381.5999999999999" y="139.880059970015"/>
+            <point key="canvasLocation" x="665" y="114"/>
         </scene>
         <!--Tweet-->
         <scene sceneID="FhA-cZ-F1s">
@@ -422,13 +422,14 @@
                         <outlet property="retweetBtn" destination="gD8-fs-pDN" id="XPD-Km-mNk"/>
                         <outlet property="retweetCountLabel" destination="yZs-Ss-ldL" id="Xdw-bV-cHz"/>
                         <outlet property="screenNameLabel" destination="Mak-hq-QxU" id="iaw-oO-vKq"/>
+                        <outlet property="scrollView" destination="xjo-AF-ed9" id="Cz8-Da-dJJ"/>
                         <outlet property="tweetTextLabel" destination="3ty-EZ-Wjl" id="e3b-b7-I8m"/>
                         <outlet property="userImageView" destination="u1G-aU-xdJ" id="FdI-IU-s1k"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Kew-b3-7s9" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="3088.8000000000002" y="136.28185907046478"/>
+            <point key="canvasLocation" x="1863" y="858"/>
         </scene>
         <!--Reply-->
         <scene sceneID="UNh-nq-iUC">
@@ -727,7 +728,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="XZZ-A0-Jwi" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="3088.8000000000002" y="-593.25337331334333"/>
+            <point key="canvasLocation" x="2526" y="-636"/>
         </scene>
         <!--Tab Bar View Controller-->
         <scene sceneID="7l7-Ip-jKf">
@@ -743,12 +744,12 @@
                         <segue destination="PhC-bU-YBG" kind="relationship" relationship="viewControllers" id="UsF-6f-8qp"/>
                         <segue destination="oEj-zM-94e" kind="relationship" relationship="viewControllers" id="EF1-He-5bJ"/>
                         <segue destination="v8W-ar-fSn" kind="relationship" relationship="viewControllers" id="HyT-aL-uoa"/>
-                        <segue destination="Od7-IW-88O" kind="relationship" relationship="viewControllers" id="HjW-aB-bh2"/>
+                        <segue destination="vlM-qW-Jp8" kind="relationship" relationship="viewControllers" id="HjW-aB-bh2"/>
                     </connections>
                 </tabBarController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="eyR-tn-Q24" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1114" y="858"/>
+            <point key="canvasLocation" x="-1002" y="858"/>
         </scene>
         <!--Notifications-->
         <scene sceneID="1gy-t6-XXL">
@@ -769,7 +770,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="pdj-sR-fzT" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="3183" y="858"/>
+            <point key="canvasLocation" x="-2230" y="2062"/>
         </scene>
         <!--Moments-->
         <scene sceneID="55V-mt-lWC">
@@ -790,7 +791,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Jb7-pk-2Mh" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="3243" y="1545"/>
+            <point key="canvasLocation" x="-1412" y="2061"/>
         </scene>
         <!--Messages-->
         <scene sceneID="Op0-Jw-T8Z">
@@ -811,14 +812,14 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="69k-gL-QdC" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2094" y="1797"/>
+            <point key="canvasLocation" x="-522" y="2061"/>
         </scene>
-        <!--Me-->
+        <!--Profile Table View Controller-->
         <scene sceneID="O60-mj-AAa">
             <objects>
                 <tableViewController storyboardIdentifier="ProfileTableViewController" id="Od7-IW-88O" customClass="ProfileTableViewController" customModule="Twitter" customModuleProvider="target" sceneMemberID="viewController">
-                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="408" sectionHeaderHeight="28" sectionFooterHeight="28" id="ez0-wG-Pv4">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" misplaced="YES" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="408" sectionHeaderHeight="28" sectionFooterHeight="28" id="ez0-wG-Pv4">
+                        <rect key="frame" x="0.0" y="64" width="375" height="603"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <view key="tableHeaderView" contentMode="scaleToFill" id="DJx-bd-8PF" userLabel="HeaderView">
@@ -874,7 +875,7 @@
                                     <color key="textColor" red="0.47058823529999999" green="0.47058823529999999" blue="0.47058823529999999" alpha="1" colorSpace="calibratedRGB"/>
                                     <nil key="highlightedColor"/>
                                 </label>
-                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Programming nerd at ucsd " textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ty4-uW-ric">
+                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Swift will begin" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ty4-uW-ric">
                                     <rect key="frame" x="16" y="235" width="343" height="17"/>
                                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                     <nil key="textColor"/>
@@ -898,16 +899,16 @@
                                     </subviews>
                                 </stackView>
                                 <stackView opaque="NO" contentMode="scaleToFill" spacing="4" translatesAutoresizingMaskIntoConstraints="NO" id="qv6-Pq-ROf">
-                                    <rect key="frame" x="141" y="267" width="90.5" height="14.5"/>
+                                    <rect key="frame" x="141" y="264.5" width="93" height="17"/>
                                     <subviews>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="68" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="wvg-pL-AVj">
-                                            <rect key="frame" x="0.0" y="0.0" width="13.5" height="14.5"/>
-                                            <fontDescription key="fontDescription" name="HelveticaNeue-Bold" family="Helvetica Neue" pointSize="12"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="16" height="17"/>
+                                            <fontDescription key="fontDescription" name="HelveticaNeue-Medium" family="Helvetica Neue" pointSize="14"/>
                                             <nil key="textColor"/>
                                             <nil key="highlightedColor"/>
                                         </label>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="FOLLOWERS" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Tju-cv-8Ul">
-                                            <rect key="frame" x="17.5" y="0.0" width="73" height="14.5"/>
+                                            <rect key="frame" x="20" y="0.0" width="73" height="17"/>
                                             <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="12"/>
                                             <color key="textColor" red="0.47058823529999999" green="0.47058823529999999" blue="0.47058823529999999" alpha="1" colorSpace="calibratedRGB"/>
                                             <nil key="highlightedColor"/>
@@ -1009,9 +1010,8 @@
                             <outlet property="delegate" destination="Od7-IW-88O" id="iCr-RQ-fUe"/>
                         </connections>
                     </tableView>
-                    <tabBarItem key="tabBarItem" title="Me" image="profile-Icon" id="PFp-pD-pFQ">
-                        <offsetWrapper key="titlePositionAdjustment" horizontal="0.0" vertical="-2"/>
-                    </tabBarItem>
+                    <extendedEdge key="edgesForExtendedLayout" bottom="YES"/>
+                    <navigationItem key="navigationItem" id="SwX-Lx-CqX"/>
                     <connections>
                         <outlet property="accountBtn" destination="QFO-Yn-74e" id="hml-FD-aPT"/>
                         <outlet property="backBtn" destination="S2B-Yj-HD1" id="1R9-lZ-sdM"/>
@@ -1029,11 +1029,12 @@
                         <outlet property="screenNameLabel" destination="QL5-fo-Qim" id="Q83-Fr-t8I"/>
                         <outlet property="segmentControl" destination="hhe-6P-Hts" id="xMF-mt-c6F"/>
                         <outlet property="topSpaceConstraint" destination="5fz-dC-Pdx" id="l1Q-rn-GOK"/>
+                        <segue destination="bga-IJ-9pv" kind="show" identifier="ShowTweetDetail" id="Qol-6i-deb"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="bCc-Fl-Ouu" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1112.8" y="2647.826086956522"/>
+            <point key="canvasLocation" x="665" y="858"/>
         </scene>
         <!--Accounts-->
         <scene sceneID="WXS-5y-7Ox">
@@ -1135,7 +1136,7 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="hmj-4F-2nn" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2921" y="2648"/>
+            <point key="canvasLocation" x="1265" y="1554"/>
         </scene>
         <!--Photo Preview View Controller-->
         <scene sceneID="ZWs-Tg-3TQ">
@@ -1153,9 +1154,22 @@
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                                 <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                             </scrollView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="TdL-Kf-2LE">
+                                <rect key="frame" x="329" y="28" width="30" height="30"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="30" id="lgP-Xz-DWn"/>
+                                    <constraint firstAttribute="width" constant="30" id="oxq-9X-YgR"/>
+                                </constraints>
+                                <state key="normal" image="close-icon-white"/>
+                                <connections>
+                                    <action selector="closeIconTapped:" destination="v9q-BO-iui" eventType="touchUpInside" id="gyu-dD-cd8"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
+                            <constraint firstItem="TdL-Kf-2LE" firstAttribute="top" secondItem="byO-yx-YWV" secondAttribute="bottom" constant="8" id="157-Uf-9v8"/>
+                            <constraint firstAttribute="trailing" secondItem="TdL-Kf-2LE" secondAttribute="trailing" constant="16" id="4tx-4f-pWT"/>
                             <constraint firstItem="NJU-Jj-tVn" firstAttribute="bottom" secondItem="FBK-ir-xXy" secondAttribute="top" id="G53-he-fWO"/>
                             <constraint firstAttribute="trailing" secondItem="NJU-Jj-tVn" secondAttribute="trailing" id="KxG-m8-4jf"/>
                             <constraint firstItem="NJU-Jj-tVn" firstAttribute="top" secondItem="5jW-xK-Obj" secondAttribute="top" id="YZF-Yl-clc"/>
@@ -1189,7 +1203,7 @@
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="qTv-Ya-Tkv" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1113" y="114"/>
+            <point key="canvasLocation" x="-111" y="114"/>
         </scene>
         <!--Reply Navigation View Controller-->
         <scene sceneID="Qdq-Oj-cFG">
@@ -1225,7 +1239,7 @@
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Qop-BY-lFq" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2382" y="-593"/>
+            <point key="canvasLocation" x="1514" y="-636"/>
         </scene>
         <!--Account Navigation View Controller-->
         <scene sceneID="QYT-Sd-0D1">
@@ -1243,7 +1257,28 @@
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="k7J-dx-PyP" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2094" y="2648"/>
+            <point key="canvasLocation" x="550" y="1554"/>
+        </scene>
+        <!--Me-->
+        <scene sceneID="K2Y-cw-vXK">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="vlM-qW-Jp8" sceneMemberID="viewController">
+                    <tabBarItem key="tabBarItem" title="Me" image="profile-Icon" id="PFp-pD-pFQ">
+                        <offsetWrapper key="titlePositionAdjustment" horizontal="0.0" vertical="-2"/>
+                    </tabBarItem>
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="Ybf-on-Zyo">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="Od7-IW-88O" kind="relationship" relationship="rootViewController" id="CCf-Ep-mL6"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Df6-yS-j0l" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-111.2" y="857.72113943028489"/>
         </scene>
     </scenes>
     <resources>
@@ -1254,6 +1289,7 @@
         <image name="back-icon-white" width="30" height="30"/>
         <image name="camera-icon" width="30" height="23"/>
         <image name="close-icon" width="26" height="24"/>
+        <image name="close-icon-white" width="40" height="40"/>
         <image name="down-arrow-white" width="30" height="30"/>
         <image name="edit-icon" width="30" height="27"/>
         <image name="favor-icon" width="30" height="30"/>
@@ -1268,4 +1304,7 @@
         <image name="selected-icon" width="30" height="30"/>
         <image name="stat-icon" width="30" height="22"/>
     </resources>
+    <inferredMetricsTieBreakers>
+        <segue reference="Qol-6i-deb"/>
+    </inferredMetricsTieBreakers>
 </document>

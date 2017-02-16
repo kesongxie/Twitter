@@ -52,10 +52,7 @@ class ProfileTableViewController: UITableViewController {
     @IBOutlet weak var bannerHeightConstraint: NSLayoutConstraint!
     @IBOutlet weak var headerView: UIView!
     @IBOutlet weak var topSpaceConstraint: NSLayoutConstraint!
-    
-    
     @IBOutlet weak var headerActivityIndicatorView: UIActivityIndicatorView!
-    
     @IBOutlet weak var accountBtn: UIButton!{
         didSet{
             if self.isUsingCurrentUser{
@@ -75,9 +72,8 @@ class ProfileTableViewController: UITableViewController {
     }
     
     @IBAction func backBtnTapped(_ sender: UIButton) {
-        self.dismiss(animated: true, completion: nil)
+        let _ = self.navigationController?.popViewController(animated: true)
     }
-    
     @IBOutlet weak var segmentControl: UISegmentedControl!
     @IBOutlet weak var downArrowImageView: UIImageView!
 
@@ -118,8 +114,11 @@ class ProfileTableViewController: UITableViewController {
     
     //state control for header view arrow animation
     var isAnimating = false
-
     var shouldHideStatusBar: Bool = false
+    
+    fileprivate var animator = HorizontalSliderAnimator()
+    var statusBarStyle: UIStatusBarStyle = .default
+
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -145,8 +144,8 @@ class ProfileTableViewController: UITableViewController {
         self.nameLabel.text = user.name
         self.screenNameLabel.text = "@" + user.screen_name
         self.bioLabel.text = user.description
-        self.followerCountLabel.text = String(user.followerCount)
-        self.followingCountLabel.text = String(user.followingCount)
+        self.followerCountLabel.text = user.followerCountString
+        self.followingCountLabel.text = user.followingCountString
         self.segmentControl.tintColor = App.themeColor
         self.loadData(completion: nil)
         
@@ -155,14 +154,21 @@ class ProfileTableViewController: UITableViewController {
     
     
     
+    
+    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        self.navigationController?.isNavigationBarHidden = true;
         if !self.isViewDidAppear{
             self.bannerOriginalHeight = self.headerView.frame.size.width /  App.bannerAspectRatio
             self.bannerHeightConstraint.constant = self.bannerOriginalHeight
             self.isViewDidAppear = true
             self.tableView.setAndLayoutTableHeaderView(header: self.headerView)
         }
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        self.navigationController?.isNavigationBarHidden = false;
     }
     
     
@@ -179,7 +185,10 @@ class ProfileTableViewController: UITableViewController {
             if !self.isAnimating{
                 self.downArrowImageView.alpha = min(1, -scrollView.contentOffset.y * 0.02)
             }
-            if let cgimg = context.createCGImage(filter.outputImage!, from: ciImage!.extent) {
+            guard let outputImage = filter.outputImage, let ciImage = self.ciImage else{
+                return
+            }
+            if let cgimg = context.createCGImage(outputImage, from: ciImage.extent) {
                 let blurImage = UIImage(cgImage: cgimg)
                 self.bannerImageView.image = blurImage
             }
@@ -227,6 +236,27 @@ class ProfileTableViewController: UITableViewController {
         return 1
     }
     
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if  let iden = segue.identifier{
+            if iden == SegueIdentifier.showTweetDetail{
+                guard let tweetDetailVC = segue.destination as? TweetDetailViewController else{
+                    return
+                }
+                guard let selectedIndexPath = sender as? IndexPath else{
+                    return
+                }
+                
+                guard let selectedTweet = self.tweets?[selectedIndexPath.row] else{
+                    return
+                }
+                tweetDetailVC.tweet = selectedTweet
+            }
+        }
+    }
+
+    
+    
+    // MARK: - UITableViewDelegate, UITableViewDataSource
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // #warning Incomplete implementation, return the number of rows
         switch self.segmentControl.selectedSegmentIndex{
@@ -254,8 +284,14 @@ class ProfileTableViewController: UITableViewController {
         default:
             break
         }
+        cell.delegate = self
         return cell
     }
+    
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        self.performSegue(withIdentifier: SegueIdentifier.showTweetDetail, sender: indexPath)
+    }
+
     
     func logoutBtnTapped(sender: UIBarButtonItem){
         UserDefaults.resetStandardUserDefaults()
@@ -297,7 +333,10 @@ class ProfileTableViewController: UITableViewController {
             })
         case 2:
             //likes
-            TwitterClient.getUserFavoritesList(callBack: { (tweets, error) in
+            guard let user = self.user else{
+                return
+            }
+            TwitterClient.getUserFavoritesList(userScreenName: user.screen_name, callBack: { (tweets, error) in
                 if let tweets = tweets{
                     self.favoritesList = tweets
                 }
@@ -306,8 +345,46 @@ class ProfileTableViewController: UITableViewController {
             break
         }
     }
+}
 
+
+extension ProfileTableViewController: TweetTableViewCellDelegate{
+    func mediaImageViewTapped(cell: TweetTableViewCell, image: UIImage?, tweet: Tweet) {
+        if let previewDetailVC = App.mainStoryBoard.instantiateViewController(withIdentifier: StorybordIdentifier.PhotoPreviewViewControllerIden) as? PhotoPreviewViewController{
+            previewDetailVC.tweet = tweet
+            previewDetailVC.image = image
+            self.present(previewDetailVC, animated: true, completion: nil)
+        }
+    }
     
-    
-    
-  }
+    func profileImageViewTapped(cell: TweetTableViewCell, tweet: Tweet) {
+        if let profileVC = App.mainStoryBoard.instantiateViewController(withIdentifier: StorybordIdentifier.ProfileTableViewControllerIden) as? ProfileTableViewController{
+            profileVC.user = tweet.user
+//            profileVC.transitioningDelegate = self
+            self.navigationController?.pushViewController(profileVC, animated: true)
+        }
+    }
+}
+
+//extension ProfileTableViewController: UIViewControllerTransitioningDelegate{
+//    func animationController(forPresented presented: UIViewController, presenting: UIViewController, source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+//        self.statusBarStyle = UIStatusBarStyle.lightContent
+//        self.view.setNeedsLayout()
+//        UIView.animate(withDuration: 0.3) {
+//            self.view .layoutIfNeeded()
+//            self.setNeedsStatusBarAppearanceUpdate()
+//        }
+//        return animator
+//    }
+//    
+//    func animationController(forDismissed dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+//        self.statusBarStyle = UIStatusBarStyle.default
+//        self.view.setNeedsLayout()
+//        UIView.animate(withDuration: 0.3) {
+//            self.view .layoutIfNeeded()
+//            self.setNeedsStatusBarAppearanceUpdate()
+//        }
+//        return animator
+//    }
+//}
+

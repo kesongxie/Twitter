@@ -10,7 +10,6 @@ import UIKit
 
 class AccountTableViewCell: UITableViewCell {
 
-    
     @IBOutlet weak var profileImageView: UIImageView!{
         didSet{
             self.profileImageView.layer.cornerRadius = 4.0

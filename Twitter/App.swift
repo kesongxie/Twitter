@@ -17,6 +17,5 @@ struct App{
     static let delegate = (UIApplication.shared.delegate as? AppDelegate)
     static let mainStoryBoard = UIStoryboard(name: App.mainStoryboadName, bundle: nil)
 
-
 }
 

@@ -185,7 +185,7 @@ extension HomeViewController: UIViewControllerTransitioningDelegate{
         self.statusBarStyle = UIStatusBarStyle.default
         self.view.setNeedsLayout()
         UIView.animate(withDuration: 0.3) {
-            self.view .layoutIfNeeded()
+            self.view.layoutIfNeeded()
             self.setNeedsStatusBarAppearanceUpdate()
         }
         return animator
@@ -202,7 +202,6 @@ extension HomeViewController: TweetTableViewCellDelegate{
     }
     
     func profileImageViewTapped(cell: TweetTableViewCell, tweet: Tweet) {
-        print("profile image view tapped")
         if let profileVC = App.mainStoryBoard.instantiateViewController(withIdentifier: StorybordIdentifier.ProfileTableViewControllerIden) as? ProfileTableViewController{
             profileVC.isPresented = true
             profileVC.user = tweet.user

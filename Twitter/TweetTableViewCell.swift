@@ -21,6 +21,7 @@ class TweetTableViewCell: UITableViewCell {
         didSet{
             self.userImageView.layer.cornerRadius = 4.0
             self.userImageView.clipsToBounds = true
+            self.userImageView.isUserInteractionEnabled = true
             //tap for userImageView
             let userProfileTap = UITapGestureRecognizer(target: self, action: #selector(userProfileTapped(_:)))
             self.userImageView.addGestureRecognizer(userProfileTap)
@@ -80,10 +81,10 @@ class TweetTableViewCell: UITableViewCell {
             }
             self.nameLabel.text = tweet.user.name
             self.screenNameLabel.text = "@" + self.tweet.user.screen_name
-            self.tweetTextLabel.text = self.tweet.text
+            self.tweetTextLabel.setRichText(tweet: self.tweet)
             self.createdAtLabel.text = self.tweet.createdAt
-            self.retweetCountLabel.text = self.tweet.retweetCount == 0 ? "" : String(self.tweet.retweetCount)
-            self.favorCountLabel.text =  self.tweet.favoriteCount == 0 ? "" : String(self.tweet.favoriteCount)
+            self.retweetCountLabel.text = self.tweet.retweetCount == 0 ? "" : self.tweet.retweetCountString
+            self.favorCountLabel.text =  self.tweet.favoriteCount == 0 ? "" : self.tweet.favoriteCountString
             
             
             self.updateFavorIconUI()
@@ -122,7 +123,7 @@ class TweetTableViewCell: UITableViewCell {
         TwitterClient.toggleFavorTweet(tweet: self.tweet, option: favorToggleOption) { (tweet, error) in
             if tweet != nil{
                 self.tweet = tweet
-                self.favorCountLabel.text =  self.tweet.favoriteCount == 0 ? "" : String(self.tweet.favoriteCount)
+                self.favorCountLabel.text =  self.tweet.favoriteCount == 0 ? "" : self.tweet.favoriteCountString
                 self.updateFavorIconUI()
             }
         }
@@ -138,7 +139,7 @@ class TweetTableViewCell: UITableViewCell {
         TwitterClient.toggleRetweet(tweet: self.tweet, option: retweetToggleOption) { (tweet, error) in
             if tweet != nil{
                 self.tweet = tweet
-                self.retweetCountLabel.text = self.tweet.retweetCount == 0 ? "" : String(self.tweet.retweetCount)
+                self.retweetCountLabel.text = self.tweet.retweetCount == 0 ? "" : self.tweet.retweetCountString
                 self.updateRetweetIconUI()
             }
         }
@@ -149,7 +150,6 @@ class TweetTableViewCell: UITableViewCell {
             delegate.mediaImageViewTapped(cell: self, image: self.mediaPhotoImageView.image, tweet: self.tweet)
         }
     }
-
     
     func userProfileTapped(_ gesture: UITapGestureRecognizer){
         if let delegate = delegate{
@@ -157,9 +157,6 @@ class TweetTableViewCell: UITableViewCell {
         }
     }
 
-    
-    
-    
     func updateFavorIconUI(){
         if self.tweet.favored{
             self.favorIconImageView.image = UIImage(named: "favor-icon-red")

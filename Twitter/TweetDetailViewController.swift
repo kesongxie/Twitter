@@ -25,7 +25,11 @@ class TweetDetailViewController: UIViewController {
     @IBOutlet weak var replyBtn: UIButton!
     @IBOutlet weak var retweetBtn: UIButton!
     @IBOutlet weak var favorBtn: UIButton!
-    
+    @IBOutlet weak var scrollView: UIScrollView!{
+        didSet{
+            self.scrollView.alwaysBounceVertical = true
+        }
+    }
     @IBAction func barBtnTapped(_ sender: UIBarButtonItem) {
         let _ = self.navigationController?.popViewController(animated: true)
     }
@@ -80,11 +84,15 @@ class TweetDetailViewController: UIViewController {
             }
         }
     }
-    var tweet: Tweet!
-    
+    var tweet: Tweet!{
+        didSet{
+            print(tweet.entitiesDict)
+        }
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.navigationController?.navigationBar.barTintColor = UIColor.white
         if self.tweet != nil{
             self.updateUI()
         }
@@ -99,10 +107,9 @@ class TweetDetailViewController: UIViewController {
         if let userProfileURL = self.tweet.user.profileImageURL{
             self.userImageView.setImageWith(userProfileURL)
         }
-        
         self.nameLabel.text = tweet.user.name
         self.screenNameLabel.text = "@" + self.tweet.user.screen_name
-        self.tweetTextLabel.text = self.tweet.text
+        self.tweetTextLabel.setRichText(tweet: self.tweet)
         self.createdAtLabel.text = self.tweet.createdAt
         self.retweetCountLabel.text = String(self.tweet.retweetCount)
         self.favorCountLabel.text = String(self.tweet.favoriteCount)
