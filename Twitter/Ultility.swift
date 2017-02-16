@@ -23,7 +23,7 @@ class Ultility: NSObject {
         let ellapseTimeSeconds = Int(-date.timeIntervalSinceNow)
         var output: String = ""
         if ellapseTimeSeconds < 15{
-            output = "Just Now"
+            output = "now"
         }else if ellapseTimeSeconds < 60{
             output = "\(ellapseTimeSeconds)s"
         }else if ellapseTimeSeconds < 60 * 60{
@@ -31,11 +31,10 @@ class Ultility: NSObject {
         }else if ellapseTimeSeconds < 60  * 60 * 24{
             output = "\(ellapseTimeSeconds / 3600)h"
         }else if ellapseTimeSeconds < 60 * 60 * 24 * 7{
-            output = "\(ellapseTimeSeconds / 3600 * 24)d"
+            output = "\(ellapseTimeSeconds / (3600 * 24))d"
         }else{
-            output = "\(ellapseTimeSeconds / 3600 * 24 * 7)w"
+            output = "\(ellapseTimeSeconds / (3600 * 24 * 7))w"
         }
         return output;
     }
-    
 }

@@ -8,13 +8,10 @@
 
 import UIKit
 fileprivate let reuseIden = "TweetCell"
+fileprivate let tweetCellNibName = "TweetTableViewCell"
+
 class ProfileTableViewController: UITableViewController {
-    @IBOutlet weak var bannerImageView: UIImageView!{
-        didSet{
-            self.bannerImageView.layer.borderWidth = 1.0
-            self.bannerImageView.layer.borderColor = UIColor(red: 200 / 255.0, green: 200 / 255.0, blue: 200 / 255.0, alpha: 1).cgColor
-        }
-    }
+    @IBOutlet weak var bannerImageView: UIImageView!
     @IBOutlet weak var profileImageView: UIImageView!{
         didSet{
             self.profileImageView.layer.cornerRadius = 6.0
@@ -56,7 +53,8 @@ class ProfileTableViewController: UITableViewController {
     @IBOutlet weak var headerView: UIView!
     @IBOutlet weak var topSpaceConstraint: NSLayoutConstraint!
     
-
+    
+    @IBOutlet weak var headerActivityIndicatorView: UIActivityIndicatorView!
     
     @IBOutlet weak var accountBtn: UIButton!{
         didSet{
@@ -70,23 +68,6 @@ class ProfileTableViewController: UITableViewController {
         }
     }
     
-    var bannerOriginalHeight: CGFloat = 0
-    var tweets: [Tweet]?{
-        didSet{
-            DispatchQueue.main.async {
-                self.tableView.reloadData()
-            }
-        }
-    }
-    var user: User? = App.delegate?.currentUser{
-        didSet{
-            self.isUsingCurrentUser = !(self.user?.screen_name != App.delegate?.currentUser?.screen_name)
-        }
-    }
-    
-    var isUsingCurrentUser = true
-    var isPresented = false
-    
     @IBOutlet weak var backBtn: UIButton!{
         didSet{
             self.backBtn.isHidden = !self.isPresented
@@ -98,16 +79,65 @@ class ProfileTableViewController: UITableViewController {
     }
     
     @IBOutlet weak var segmentControl: UISegmentedControl!
+    @IBOutlet weak var downArrowImageView: UIImageView!
+
+    
+    var bannerOriginalHeight: CGFloat = 0
+    var tweets: [Tweet]?{
+        didSet{
+            DispatchQueue.main.async {
+                self.tableView.reloadData()
+            }
+        }
+    }
+    
+    var mediaFilteredTweet: [Tweet]?{
+        didSet{
+            self.tableView.reloadData()
+        }
+    }
+    
+    var favoritesList: [Tweet]?{
+        didSet{
+            self.tableView.reloadData()
+        }
+    }
+    
+    var user: User? = App.delegate?.currentUser{
+        didSet{
+            self.isUsingCurrentUser = !(self.user?.screen_name != App.delegate?.currentUser?.screen_name)
+        }
+    }
+    
+    var isUsingCurrentUser = true
+    var isPresented = false
+    var isViewDidAppear = false
+    lazy var context = CIContext()
+    var filter: CIFilter!
+    var ciImage: CIImage?
+    
+    //state control for header view arrow animation
+    var isAnimating = false
+
+    var shouldHideStatusBar: Bool = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.filter = CIFilter(name: "CIGaussianBlur")
+        let nib = UINib(nibName: tweetCellNibName, bundle: nil)
+        self.tableView.register(nib, forCellReuseIdentifier: reuseIden)
         self.tableView.estimatedRowHeight = self.tableView.rowHeight
         self.tableView.rowHeight = UITableViewAutomaticDimension
         guard let user = self.user else{
             return
         }
         if let bannerURL = user.profileBannerURL{
-            self.bannerImageView.setImageWith(bannerURL)
+            let urlRequest = URLRequest(url: bannerURL)
+            self.bannerImageView.setImageWith(urlRequest, placeholderImage: nil, success: { (request, response, image) in
+                self.bannerImageView.image = image
+                self.ciImage = CIImage(cgImage: image.cgImage!)
+                self.filter.setValue(self.ciImage, forKey: kCIInputImageKey)
+            }, failure: nil)
         }
         if let profileImageURL = user.profileImageURL{
             self.profileImageView.setImageWith(profileImageURL)
@@ -118,40 +148,114 @@ class ProfileTableViewController: UITableViewController {
         self.followerCountLabel.text = String(user.followerCount)
         self.followingCountLabel.text = String(user.followingCount)
         self.segmentControl.tintColor = App.themeColor
-
-        TwitterClient.getUserProfileTimeLine(userScreenName: user.screen_name) { (tweets, error) in
-            if let tweets = tweets{
-                self.tweets = tweets
-            }
-        }
+        self.loadData(completion: nil)
+        
+        self.segmentControl.addTarget(self, action: #selector(segmentControlValueChanged(_:)), for: .valueChanged)
     }
+    
+    
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        self.bannerImageView.frame.size.width = self.view.frame.size.width
-        self.bannerOriginalHeight = self.view.frame.size.width / App.bannerAspectRatio
+        if !self.isViewDidAppear{
+            self.bannerOriginalHeight = self.headerView.frame.size.width /  App.bannerAspectRatio
+            self.bannerHeightConstraint.constant = self.bannerOriginalHeight
+            self.isViewDidAppear = true
+            self.tableView.setAndLayoutTableHeaderView(header: self.headerView)
+        }
     }
     
-    override func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
-        let height = self.headerView.systemLayoutSizeFitting(UILayoutFittingCompressedSize).height
-        self.headerView.frame.size.height = height
-    }
-
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
     
-    
-    
-    func setLogoutBtn(){
-        //        self.logoutBtn = UIBarButtonItem(title: "Logout", style: .plain, target: self, action: #selector(logoutBtnTapped(sender:)))
-        //        self.logoutBtn?.tintColor = UIColor.black
-        //        self.navigationItem.leftBarButtonItem = self.logoutBtn
+    override func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        if scrollView.contentOffset.y <= 0{
+            self.topSpaceConstraint.constant = scrollView.contentOffset.y
+            self.bannerHeightConstraint.constant = self.bannerOriginalHeight - scrollView.contentOffset.y
+            self.filter.setValue(-scrollView.contentOffset.y * 0.1, forKey: "inputRadius")
+            if !self.isAnimating{
+                self.downArrowImageView.alpha = min(1, -scrollView.contentOffset.y * 0.02)
+            }
+            if let cgimg = context.createCGImage(filter.outputImage!, from: ciImage!.extent) {
+                let blurImage = UIImage(cgImage: cgimg)
+                self.bannerImageView.image = blurImage
+            }
+        }
     }
     
     
+    override func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+        if self.downArrowImageView.alpha == 1 &&  !self.isAnimating{
+            let transform = CGAffineTransform(rotationAngle: CGFloat.pi)
+            self.isAnimating = true
+            UIView.animate(withDuration: 0.3, delay: 0, options: .curveLinear, animations: {
+                self.downArrowImageView.transform = transform
+            }, completion: { (finished) in
+                if finished{
+                    self.downArrowImageView.alpha = 0
+                    self.headerActivityIndicatorView.isHidden = false
+                    self.headerActivityIndicatorView.startAnimating()
+                    self.downArrowImageView.transform = .identity
+                    self.isAnimating = false
+                    self.loadData(completion: {
+                        self.headerActivityIndicatorView.stopAnimating()
+                    })
+                }
+            })
+        }
+    }
+    
+    override var preferredStatusBarStyle: UIStatusBarStyle{
+        return .lightContent
+    }
+    
+    override var prefersStatusBarHidden: Bool{
+        return self.shouldHideStatusBar
+    }
+    
+    override var preferredStatusBarUpdateAnimation: UIStatusBarAnimation{
+        return .fade
+    }
+    
+    
+    // MARK: - Table view data source
+    override func numberOfSections(in tableView: UITableView) -> Int {
+        // #warning Incomplete implementation, return the number of sections
+        return 1
+    }
+    
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        // #warning Incomplete implementation, return the number of rows
+        switch self.segmentControl.selectedSegmentIndex{
+        case 0:
+            return self.tweets?.count ?? 0
+        case 1:
+            return self.mediaFilteredTweet?.count ?? 0
+        case 2:
+            return self.favoritesList?.count ?? 0
+        default:
+            return 0
+        }
+        
+    }
+    
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: reuseIden, for: indexPath) as! TweetTableViewCell
+        switch self.segmentControl.selectedSegmentIndex{
+        case 0:
+            cell.tweet =  self.tweets![indexPath.row]
+        case 1:
+            cell.tweet =  self.mediaFilteredTweet![indexPath.row]
+        case 2:
+            cell.tweet = self.favoritesList![indexPath.row]
+        default:
+            break
+        }
+        return cell
+    }
     
     func logoutBtnTapped(sender: UIBarButtonItem){
         UserDefaults.resetStandardUserDefaults()
@@ -162,36 +266,48 @@ class ProfileTableViewController: UITableViewController {
         })
     }
     
-    
-    override func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        if scrollView.contentOffset.y < 0{
-            self.topSpaceConstraint.constant = scrollView.contentOffset.y
-            self.bannerHeightConstraint.constant = self.bannerOriginalHeight - scrollView.contentOffset.y
+    /** load user's home timeline
+     */
+    func loadData(completion completionHandlder:  ((Void) -> Void)? ){
+        guard let user = self.user else{
+            return
+        }
+        TwitterClient.getUserProfileTimeLine(userScreenName: user.screen_name) { (tweets, error) in
+            if let tweets = tweets{
+                self.tweets = tweets
+                if let completion = completionHandlder{
+                    completion()
+                }
+            }
         }
     }
     
-    override var preferredStatusBarStyle: UIStatusBarStyle{
-        return .lightContent
+    /*
+     * sement control value changed event
+     */
+    
+    func segmentControlValueChanged(_ sender: UISegmentedControl){
+        switch sender.selectedSegmentIndex{
+        case 0:
+            //home default tweets
+            self.tableView.reloadData()
+        case 1:
+            self.mediaFilteredTweet = self.tweets?.filter({ (tweet) -> Bool in
+                tweet.photos != nil
+            })
+        case 2:
+            //likes
+            TwitterClient.getUserFavoritesList(callBack: { (tweets, error) in
+                if let tweets = tweets{
+                    self.favoritesList = tweets
+                }
+            })
+        default:
+            break
+        }
     }
+
     
     
-    // MARK: - Table view data source
-
-    override func numberOfSections(in tableView: UITableView) -> Int {
-        // #warning Incomplete implementation, return the number of sections
-        return 1
-    }
-
-    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        // #warning Incomplete implementation, return the number of rows
-        return self.tweets?.count ?? 0
-    }
     
-    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: reuseIden, for: indexPath) as! TweetTableViewCell
-        cell.tweet =  self.tweets![indexPath.row]
-        return cell
-
-    }
-
-}
+  }

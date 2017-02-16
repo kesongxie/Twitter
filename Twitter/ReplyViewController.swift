@@ -32,8 +32,8 @@ class ReplyViewController: UIViewController {
             if let url = currentLoggedInUser.profileImageURL{
                 self.currentUserProfileImageView.setImageWith(url)
             }
-            self.currentUserScreenNameLabel.text = currentLoggedInUser.name
-            self.currentUserScreenNameLabel.text = currentLoggedInUser.screen_name
+            self.currentUserNameLabel.text = currentLoggedInUser.name
+            self.currentUserScreenNameLabel.text = "@\(currentLoggedInUser.screen_name!)"
         }
         self.updatePlaceHodlerUI()
         self.textView.becomeFirstResponder()

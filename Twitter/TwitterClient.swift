@@ -18,6 +18,7 @@ class TwitterClient{
         case create
         case destroy
     }
+    static let TwitterClientDidDeAuthenticateNotificationName = Notification.Name("TwitterClientDidDeAuthenticateNotification")
     
     static let oAuthURLScheme = "twitter-codepath"
     static let oAuthURLHost = "oauth"
@@ -29,17 +30,18 @@ class TwitterClient{
     static let authorizePath = "oauth/authorize"
     static let authUserEndPoint = "https://api.twitter.com/1.1/account/verify_credentials.json"
     static let homeTimeLineEndPoint = "https://api.twitter.com/1.1/statuses/home_timeline.json"
-    static let userProfieTimeLineEndPoint = "https://api.twitter.com/1.1/statuses/user_timeline.json?screen_name="
+    static let userProfieTimeLineEndPoint = oAuthBaseURL + "/1.1/statuses/user_timeline.json"
 
-    static let createFavorTweetEndPoint = "https://api.twitter.com/1.1/favorites/create.json?id="
-    static let destroyFavorTweetEndPoint = "https://api.twitter.com/1.1/favorites/destroy.json?id="
+    static let createFavorTweetEndPoint = oAuthBaseURL + "/1.1/favorites/create.json"
+    static let destroyFavorTweetEndPoint = oAuthBaseURL + "/1.1/favorites/destroy.json"
     static let retweetCreateEndPoint = "https://api.twitter.com/1.1/statuses/retweet/" //append .json extension after append the tweet id
     static let retweetDestroyEndPoint = "https://api.twitter.com/1.1/statuses/unretweet/"
-    static let TwitterClientDidDeAuthenticateNotificationName = Notification.Name("TwitterClientDidDeAuthenticateNotification")
     static let sendTweetEndPoint = "https://api.twitter.com/1.1/statuses/update.json?status="
     static let friendShipLookUpEndPoint = "https://api.twitter.com/1.1/friendships/lookup.json"
     
-
+    static let  favoritesListEndPoint = oAuthBaseURL + "/1.1/favorites/list.json"
+    
+    
     static let shareInstance = BDBOAuth1SessionManager(baseURL: URL(string: TwitterClient.oAuthBaseURL), consumerKey: TwitterClient.consumerKey, consumerSecret: TwitterClient.consumerSecret)
     
     class func fetchAccessTokenWithURL(url: URL, success: @escaping (BDBOAuth1Credential?) -> Void, failure: @escaping (Error?) -> Void ){
@@ -89,6 +91,7 @@ class TwitterClient{
                 let tweets = timelineDict.map{(element) -> Tweet in
                     return Tweet(tweetDict: element)
                 }
+                App.delegate?.currentUser?.timeline = tweets
                 callBack(tweets, nil)
             }
         }, failure: { (task: URLSessionDataTask?, error:Error) in
@@ -98,8 +101,9 @@ class TwitterClient{
     }
     
     class func getUserProfileTimeLine(userScreenName: String, callBack: @escaping (_ response: [Tweet]?, _ error: Error? ) -> Void){
-        let fetchURLString = self.userProfieTimeLineEndPoint + userScreenName
-        let _ = TwitterClient.shareInstance?.get(fetchURLString, parameters: nil, progress: nil, success: { (task: URLSessionDataTask, response:Any?) in
+        let fetchURLString = self.userProfieTimeLineEndPoint
+        let param: [String : Any] = ["count": 100, "screen_name": userScreenName]
+        let _ = TwitterClient.shareInstance?.get(fetchURLString, parameters: param, progress: nil, success: { (task: URLSessionDataTask, response:Any?) in
             if let timelineDict = response as? [[String: Any]]{
                 let tweets = timelineDict.map{(element) -> Tweet in
                     return Tweet(tweetDict: element)
@@ -112,18 +116,36 @@ class TwitterClient{
         })
     }
 
-    
-    
+    /** get the authenticated user favorite list
+     */
+    class func getUserFavoritesList(callBack: @escaping (_ response: [Tweet]?, _ error: Error? ) -> Void){
+        if let currentUser = App.delegate?.currentUser{
+            let fetchURLString = self.favoritesListEndPoint
+            let param: [String : Any] = ["count": 100, "screen_name": currentUser.screen_name]
+            let _ = TwitterClient.shareInstance?.get(fetchURLString, parameters: param, progress: nil, success: { (task: URLSessionDataTask, response:Any?) in
+                if let tweetList = response as? [[String: Any]]{
+                    let tweets = tweetList.map{(element) -> Tweet in
+                        return Tweet(tweetDict: element)
+                    }
+                    callBack(tweets, nil)
+                }
+            }, failure: { (task: URLSessionDataTask?, error:Error) in
+                print(error.localizedDescription)
+                callBack(nil, error)
+            })
+        }
+    }
     
     class func toggleFavorTweet(tweet: Tweet, option: FavorToggleOption,  callBack: @escaping (_ response: Tweet?, _ error: Error? ) -> Void){
         var favorEndPoint: String
         if option == .create{
-            favorEndPoint = TwitterClient.createFavorTweetEndPoint + String(tweet.id)
+            favorEndPoint = TwitterClient.createFavorTweetEndPoint
         }else{
-            favorEndPoint = TwitterClient.destroyFavorTweetEndPoint + String(tweet.id)
+            favorEndPoint = TwitterClient.destroyFavorTweetEndPoint
         }
         
-        let _ = TwitterClient.shareInstance?.post(favorEndPoint, parameters: nil, progress: nil, success: { (task: URLSessionDataTask, response:Any?) in
+        let param = ["id": String(tweet.id)]
+        let _ = TwitterClient.shareInstance?.post(favorEndPoint, parameters: param, progress: nil, success: { (task: URLSessionDataTask, response:Any?) in
             if let tweetDict = response as? [String: Any]{
                 let tweet = Tweet(tweetDict: tweetDict)
                 callBack(tweet, nil)
@@ -178,7 +200,7 @@ class TwitterClient{
                 let tweets = timelineDict.map{(element) -> Tweet in
                     return Tweet(tweetDict: element)
                 }
-                currentUser.timeline?.append(contentsOf: tweets)
+                App.delegate?.currentUser?.timeline?.append(contentsOf: tweets)
                 callBack(tweets, nil)
             }
         }, failure: { (task: URLSessionDataTask?, error:Error) in
@@ -223,8 +245,9 @@ class TwitterClient{
             print(error.localizedDescription)
             callBack(nil, error)
         })
-
     }
+    
+    
     
     
 }

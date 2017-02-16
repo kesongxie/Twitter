@@ -11,7 +11,6 @@ import Foundation
 struct  AppNotification{
     static let tweetDidSendNotificationName = Notification.Name("TweetDidSendNotification")
     static let tweetDidSendTweetInfoKey = Notification.Name("Tweet")
-
     static let userProfileTappedNotificationName = Notification.Name("UserProfileTappedNotification")
     static let userProfileTappedUserKey = Notification.Name("User")
 

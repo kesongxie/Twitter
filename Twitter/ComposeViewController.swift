@@ -70,8 +70,8 @@ class ComposeViewController: UIViewController {
             if let url = currentLoggedInUser.profileImageURL{
                 self.currentUserProfileImageView.setImageWith(url)
             }
-            self.currentUserScreenNameLabel.text = currentLoggedInUser.name
-            self.currentUserScreenNameLabel.text = currentLoggedInUser.screen_name
+            self.currentUserNameLabel.text = currentLoggedInUser.name
+            self.currentUserScreenNameLabel.text = "@\(currentLoggedInUser.screen_name!)"
         }
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardDidShow(notification:)), name: Notification.Name("UIKeyboardDidShowNotification"), object: nil)
         

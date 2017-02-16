@@ -15,5 +15,6 @@ struct StorybordIdentifier{
     static let ReplyNavigationViewControllerIden = "ReplyNavigationViewController"
     static let TabBarViewControllerIden = "TabBarViewController"
     static let ProfileTableViewControllerIden = "ProfileTableViewController"
+    static let PhotoPreviewViewControllerIden = "PhotoPreviewViewController"
 }
 

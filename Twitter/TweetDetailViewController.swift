@@ -47,8 +47,6 @@ class TweetDetailViewController: UIViewController {
                 self.present(replyNVC, animated: true, completion: nil)
             }
         }
-        
-        
     }
     
     @IBAction func retweetBtnTapped(_ sender: UIButton) {
@@ -141,7 +139,7 @@ class TweetDetailViewController: UIViewController {
             imageName = "retweet-icon"
         }
         let image = UIImage(named: imageName)
-        self.favorBtn.setImage(image, for: .normal)
+        self.retweetBtn.setImage(image, for: .normal)
     }
 
 

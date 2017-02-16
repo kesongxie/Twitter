@@ -36,16 +36,16 @@ class User{
         return URL(string: urlString)
     }
     
-    var lowesLoadedtTimeLineId: UInt{
+    var lowesLoadedtTimeLineId: Int64{
         get{
             
             if let timeline = self.timeline{
-                let idList: [UInt] = timeline.map({ (tweet) -> UInt in
+                let idList: [Int64] = timeline.map({ (tweet) -> Int64 in
                     return tweet.id
                 })
-                return idList.min()!
+                return idList.min()! - 1
             }
-            return UInt.max
+            return Int64.max
         }
     }
     

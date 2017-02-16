@@ -14,7 +14,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
    
     static let FinishedLogInNotificationName = Notification.Name("FinishedLogInNotification")
     static let FinishedLogInUserInfoKey = "FinishedLogInTweetsInfo"
-    
+    static let FailedToLogInNotificationName = Notification.Name("FailedToLogInNotificatio")
+
     static let CurrentUserAvailableNotificationName = Notification.Name("CurrentUserAvailableNotification")
     static let CurrentUserAvailableUserInfoKey = "CurrentUserAvailableUserInfo"
 
@@ -79,12 +80,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                             let user = [AppDelegate.FinishedLogInUserInfoKey: self.currentUser]
                             let finishedLogInNotification = Notification(name: AppDelegate.FinishedLogInNotificationName, object: self, userInfo: user)
                             NotificationCenter.default.post(finishedLogInNotification)
-                            
                         })
                     }
                 })
             },
             failure:{(error: Error?) in
+                let failedToLogInNotification = Notification(name: AppDelegate.FailedToLogInNotificationName, object: self, userInfo: nil)
+                NotificationCenter.default.post(failedToLogInNotification)
                 if error != nil{
                     print(error!.localizedDescription)
                 }

@@ -9,6 +9,7 @@
 import UIKit
 
 fileprivate let reuseIden = "TweetCell"
+fileprivate let tweetCellNibName = "TweetTableViewCell"
 
 class HomeViewController: UIViewController {
     
@@ -38,6 +39,9 @@ class HomeViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        self.tableView.register(UINib(nibName: tweetCellNibName, bundle: Bundle.main), forCellReuseIdentifier: reuseIden)
+
         //tableView set up
         self.tableView.delegate = self
         self.tableView.dataSource = self
@@ -93,10 +97,12 @@ class HomeViewController: UIViewController {
     
     func refreshTimeLine(){
         TwitterClient.getHomeTimeLine { (tweets, error) in
-            App.delegate?.currentUser?.timeline = tweets
-            DispatchQueue.main.async {
-                self.refreshControl.endRefreshing()
-                self.tableView.reloadData()
+            if error == nil{
+                DispatchQueue.main.async {
+                    //the home time line of the current user will be updating after this call if suceed
+                    self.refreshControl.endRefreshing()
+                    self.tableView.reloadData()
+                }
             }
         }
 
@@ -104,15 +110,11 @@ class HomeViewController: UIViewController {
 
     func loadMoreEntries(){
         TwitterClient.loadMoreTweet { (newTweets, error) in
-            if let newTweets = newTweets, newTweets.count > 0{
-                self.isLoadingData = false
-                App.delegate?.currentUser?.timeline?.append(contentsOf: newTweets)
+            if error == nil{
                 DispatchQueue.main.async {
-                    self.footerLoadingView.isHidden = true
+                    self.isLoadingData = false
                     self.tableView.reloadData()
                 }
-            }else{
-                self.footerLoadingView.isHidden = true
             }
         }
     }
@@ -122,17 +124,6 @@ class HomeViewController: UIViewController {
             if(scrollView.contentOffset.y > scrollView.contentSize.height - self.view.frame.size.height){
                 self.isLoadingData = true
                 self.loadMoreEntries()
-            }
-        }
-    }
-    
-    func shouldPushUserProfileHandler(gesture: UIGestureRecognizer){
-        if let profileVC = App.mainStoryBoard.instantiateViewController(withIdentifier: StorybordIdentifier.ProfileTableViewControllerIden) as? ProfileTableViewController{
-            if let cell = gesture.view?.superview?.superview as? TweetTableViewCell{
-                profileVC.isPresented = true
-                profileVC.user = cell.tweet.user
-                profileVC.transitioningDelegate = self
-                self.present(profileVC, animated: true, completion: nil)
             }
         }
     }
@@ -169,10 +160,8 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource{
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: reuseIden, for: indexPath) as! TweetTableViewCell
-        //tap for userImageView
-        let userProfileTap = UITapGestureRecognizer(target: self, action: #selector(shouldPushUserProfileHandler(gesture:)))
-        cell.userImageView.addGestureRecognizer(userProfileTap)        
-        cell.tweet =  App.delegate?.currentUser?.timeline![indexPath.row]
+        cell.tweet = App.delegate?.currentUser?.timeline?[indexPath.row]
+        cell.delegate = self
         return cell
     }
     
@@ -201,5 +190,24 @@ extension HomeViewController: UIViewControllerTransitioningDelegate{
         }
         return animator
     }
+}
+
+extension HomeViewController: TweetTableViewCellDelegate{
+    func mediaImageViewTapped(cell: TweetTableViewCell, image: UIImage?, tweet: Tweet) {
+        if let previewDetailVC = App.mainStoryBoard.instantiateViewController(withIdentifier: StorybordIdentifier.PhotoPreviewViewControllerIden) as? PhotoPreviewViewController{
+            previewDetailVC.tweet = tweet
+            previewDetailVC.image = image
+            self.present(previewDetailVC, animated: true, completion: nil)
+        }
+    }
     
+    func profileImageViewTapped(cell: TweetTableViewCell, tweet: Tweet) {
+        print("profile image view tapped")
+        if let profileVC = App.mainStoryBoard.instantiateViewController(withIdentifier: StorybordIdentifier.ProfileTableViewControllerIden) as? ProfileTableViewController{
+            profileVC.isPresented = true
+            profileVC.user = tweet.user
+            profileVC.transitioningDelegate = self
+            self.present(profileVC, animated: true, completion: nil)
+        }
+    }
 }

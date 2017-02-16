@@ -9,6 +9,10 @@
 import UIKit
 import BDBOAuth1Manager
 
+protocol LogInViewControllerDelegate: class{
+    func loginWithTwitterBtnTapped(controller: UIViewController);
+}
+
 class LogInViewController: UIViewController {
 
     @IBOutlet weak var scrollView: UIScrollView!
@@ -18,12 +22,17 @@ class LogInViewController: UIViewController {
         }
     }
     @IBAction func loginWithTwitterBtnTapped(_ sender: UIButton) {
-        TwitterClient.logInWithTwitter()
+        if let delegate = delegate{
+            TwitterClient.logInWithTwitter()
+            delegate.loginWithTwitterBtnTapped(controller: self)
+        }
     }
     
     var statusBarStyle: UIStatusBarStyle?
     
     let animator = HorizontalSliderAnimator()
+    
+    weak var delegate: LogInViewControllerDelegate?
     
     override func viewDidLoad() {
         super.viewDidLoad()

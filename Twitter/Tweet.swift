@@ -10,8 +10,8 @@ import Foundation
 
 class Tweet{
     let tweetDict: [String: Any]!
-    var id: UInt{
-        return tweetDict["id"] as! UInt
+    var id: Int64{
+        return tweetDict["id"] as! Int64
     }
     
     var text: String{

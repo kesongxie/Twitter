@@ -8,6 +8,8 @@
 
 import UIKit
 
+fileprivate let loginEmbedSgue = "loginEmbedSgue"
+
 class PrepareViewController: UIViewController {
 
     var animator = HorizontalSliderAnimator()
@@ -16,10 +18,17 @@ class PrepareViewController: UIViewController {
     
     var statusBarStyle: UIStatusBarStyle = .lightContent
     
+    
+    @IBOutlet weak var loginContainerView: UIView!
+    
+    @IBOutlet weak var logoView: UIView!
     override func viewDidLoad() {
         super.viewDidLoad()
         NotificationCenter.default.addObserver(self, selector: #selector(navigateToHomeAfterLoggedIn(notification:)), name: AppDelegate.FinishedLogInNotificationName, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(failedToLogin(notification:)), name: AppDelegate.FailedToLogInNotificationName, object: nil)
+
         NotificationCenter.default.addObserver(self, selector: #selector(didLogout(notification:)), name: TwitterClient.TwitterClientDidDeAuthenticateNotificationName, object: nil)
+        
         if let _ = User.getCurrentUser(){
             if let tabBarVC = App.mainStoryBoard.instantiateViewController(withIdentifier: StorybordIdentifier.TabBarViewControllerIden) as? TabBarViewController{
                 tabBarVC.transitioningDelegate = self
@@ -37,14 +46,18 @@ class PrepareViewController: UIViewController {
         // Dispose of any resources that can be recreated.
     }
     
-    
     func navigateToHomeAfterLoggedIn(notification: Notification){
+        print("recieved notification")
         DispatchQueue.main.async {
             if let tabBarVC = App.mainStoryBoard.instantiateViewController(withIdentifier: StorybordIdentifier.TabBarViewControllerIden) as? TabBarViewController{
                 tabBarVC.transitioningDelegate = self
-                    self.presentedViewController?.present(tabBarVC, animated: true, completion: nil)
+                self.present(tabBarVC, animated: true, completion: nil)
             }
         }
+    }
+    
+    func failedToLogin(notification: Notification){
+        self.view.bringSubview(toFront: self.loginContainerView)
     }
     
     func didLogout(notification: Notification){
@@ -53,13 +66,7 @@ class PrepareViewController: UIViewController {
     
     func presentLogInVCIfNeeded(){
         if !self.isLoggedInScreenPresented{
-            let storyboard = UIStoryboard(name: "Main", bundle: nil)
-            if let loginVC = storyboard.instantiateViewController(withIdentifier: StorybordIdentifier.LogInViewControllerIden) as? LogInViewController{
-                DispatchQueue.main.async {
-                    self.isLoggedInScreenPresented = true
-                    self.present(loginVC, animated: true, completion: nil)
-                }
-            }
+            self.view.bringSubview(toFront: self.loginContainerView)
         }
         UIView.animate(withDuration: 0.3) { 
             self.view.layoutIfNeeded()
@@ -76,6 +83,14 @@ class PrepareViewController: UIViewController {
     }
     
     
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == loginEmbedSgue{
+            if let loginVC = segue.destination as? LogInViewController{
+                loginVC.delegate = self
+            }
+        }
+    }
+    
 }
 
 extension PrepareViewController: UIViewControllerTransitioningDelegate{
@@ -83,7 +98,7 @@ extension PrepareViewController: UIViewControllerTransitioningDelegate{
         self.statusBarStyle = UIStatusBarStyle.default
         self.view.setNeedsLayout()
         UIView.animate(withDuration: 0.3) {
-            self.view .layoutIfNeeded()
+            self.view.layoutIfNeeded()
             self.setNeedsStatusBarAppearanceUpdate()
         }
         return animator
@@ -94,3 +109,14 @@ extension PrepareViewController: UIViewControllerTransitioningDelegate{
     }
     
 }
+
+extension PrepareViewController: LogInViewControllerDelegate{
+    func loginWithTwitterBtnTapped(controller: UIViewController) {
+        let deadline = DispatchTime.now() + .seconds(2)
+        DispatchQueue.main.asyncAfter(deadline: deadline, execute: {
+            self.view.bringSubview(toFront: self.logoView)
+        })
+    }
+}
+
+

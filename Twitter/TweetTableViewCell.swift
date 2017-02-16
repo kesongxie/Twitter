@@ -9,12 +9,22 @@
 import UIKit
 
 
+protocol TweetTableViewCellDelegate: class  {
+    func mediaImageViewTapped(cell: TweetTableViewCell, image: UIImage?,  tweet: Tweet)
+    func profileImageViewTapped(cell: TweetTableViewCell, tweet: Tweet)
+
+}
+
 class TweetTableViewCell: UITableViewCell {
     
     @IBOutlet weak var userImageView: UIImageView!{
         didSet{
             self.userImageView.layer.cornerRadius = 4.0
             self.userImageView.clipsToBounds = true
+            //tap for userImageView
+            let userProfileTap = UITapGestureRecognizer(target: self, action: #selector(userProfileTapped(_:)))
+            self.userImageView.addGestureRecognizer(userProfileTap)
+
         }
     }
     @IBOutlet weak var nameLabel: UILabel!
@@ -33,13 +43,30 @@ class TweetTableViewCell: UITableViewCell {
     
     @IBOutlet weak var favorCountLabel: UILabel!
     
-    @IBOutlet weak var retweetStackView: UIStackView!
+    @IBOutlet weak var retweetStackView: UIStackView!{
+        didSet{
+            //tap for retweet
+            let retweetTap = UITapGestureRecognizer(target: self, action: #selector(retweetStackViewTapped(_:)))
+            self.retweetStackView.addGestureRecognizer(retweetTap)
+        }
+    }
     
-    @IBOutlet weak var favorStackView: UIStackView!
+    @IBOutlet weak var favorStackView: UIStackView!{
+        didSet{
+            //tap for favor
+            let favorTap = UITapGestureRecognizer(target: self, action: #selector(favorStackViewTapped(_:)))
+            self.favorStackView.addGestureRecognizer(favorTap)
+        }
+    }
     
     @IBOutlet weak var mediaPhotoImageView: UIImageView!{
         didSet{
+            self.mediaPhotoImageView.clipsToBounds = true
             self.mediaPhotoImageView.layer.cornerRadius = 4.0
+            self.mediaPhotoImageView.isUserInteractionEnabled = true
+            let mediaTap = UITapGestureRecognizer(target: self, action: #selector(mediaTaped(_:)))
+            self.mediaPhotoImageView.addGestureRecognizer(mediaTap)
+
         }
     }
     
@@ -47,49 +74,45 @@ class TweetTableViewCell: UITableViewCell {
     
     var tweet: Tweet!{
         didSet{
+            self.userImageView.image = nil
             if let userProfileURL = self.tweet.user.profileImageURL{
-                self.userImageView.setImageWith(userProfileURL)
+                self.userImageView.loadImageWithURL(userProfileURL, withFadeIn: true)
             }
-            
             self.nameLabel.text = tweet.user.name
             self.screenNameLabel.text = "@" + self.tweet.user.screen_name
             self.tweetTextLabel.text = self.tweet.text
             self.createdAtLabel.text = self.tweet.createdAt
-            self.retweetCountLabel.text = String(self.tweet.retweetCount)
-            self.favorCountLabel.text = String(self.tweet.favoriteCount)
+            self.retweetCountLabel.text = self.tweet.retweetCount == 0 ? "" : String(self.tweet.retweetCount)
+            self.favorCountLabel.text =  self.tweet.favoriteCount == 0 ? "" : String(self.tweet.favoriteCount)
             
-            //tap for favor
-            let favorTap = UITapGestureRecognizer(target: self, action: #selector(favorStackViewTapped(gesture:)))
-            self.favorStackView.addGestureRecognizer(favorTap)
             
-            //tap for retweet
-            let retweetTap = UITapGestureRecognizer(target: self, action: #selector(retweetStackViewTapped(gesture:)))
-            self.retweetStackView.addGestureRecognizer(retweetTap)
             self.updateFavorIconUI()
             self.updateRetweetIconUI()
             
             self.mediaPhotoImageView.image = nil
             if let photo = self.tweet.photos?.first{
                 self.mediaHeightConstraint.constant = self.mediaPhotoImageView.frame.size.width * photo.size.height / photo.size.width
-                self.mediaPhotoImageView.setImageWith(photo.photoURL)
+                self.mediaPhotoImageView.loadImageWithURL(photo.photoURL, withFadeIn: true)
             }else{
-                 self.mediaHeightConstraint.constant = 0
+                self.mediaHeightConstraint.constant = 0
             }
         }
     }
+    
+    weak var delegate: TweetTableViewCellDelegate?
     
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
     }
-
+    
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
-
+        
         // Configure the view for the selected state
     }
-
-    func favorStackViewTapped(gesture: UITapGestureRecognizer){
+    
+    func favorStackViewTapped(_ gesture: UITapGestureRecognizer){
         var favorToggleOption: TwitterClient.FavorToggleOption
         if self.tweet.favored{
             favorToggleOption = .destroy
@@ -99,13 +122,13 @@ class TweetTableViewCell: UITableViewCell {
         TwitterClient.toggleFavorTweet(tweet: self.tweet, option: favorToggleOption) { (tweet, error) in
             if tweet != nil{
                 self.tweet = tweet
-                self.favorCountLabel.text = String(tweet!.favoriteCount)
+                self.favorCountLabel.text =  self.tweet.favoriteCount == 0 ? "" : String(self.tweet.favoriteCount)
                 self.updateFavorIconUI()
             }
         }
     }
     
-    func retweetStackViewTapped(gesture: UITapGestureRecognizer){
+    func retweetStackViewTapped(_ gesture: UITapGestureRecognizer){
         var retweetToggleOption: TwitterClient.RetweetToggleOption
         if self.tweet.retweeted{
             retweetToggleOption = .destroy
@@ -115,12 +138,27 @@ class TweetTableViewCell: UITableViewCell {
         TwitterClient.toggleRetweet(tweet: self.tweet, option: retweetToggleOption) { (tweet, error) in
             if tweet != nil{
                 self.tweet = tweet
-                self.retweetCountLabel.text = String(tweet!.retweetCount)
+                self.retweetCountLabel.text = self.tweet.retweetCount == 0 ? "" : String(self.tweet.retweetCount)
                 self.updateRetweetIconUI()
             }
         }
     }
+    
+    func mediaTaped(_ gesture: UITapGestureRecognizer){
+        if let delegate = delegate{
+            delegate.mediaImageViewTapped(cell: self, image: self.mediaPhotoImageView.image, tweet: self.tweet)
+        }
+    }
 
+    
+    func userProfileTapped(_ gesture: UITapGestureRecognizer){
+        if let delegate = delegate{
+            delegate.profileImageViewTapped(cell: self, tweet: self.tweet)
+        }
+    }
+
+    
+    
     
     func updateFavorIconUI(){
         if self.tweet.favored{
@@ -136,10 +174,10 @@ class TweetTableViewCell: UITableViewCell {
         }else{
             self.retweetIconImageView.image = UIImage(named: "retweet-icon")
         }
-        
     }
     
-
     
-
+    
+    
+    
 }
