@@ -45,7 +45,6 @@ class Ultility: NSObject {
             if mod == 0{
                 mod = 1
             }
-            print(String(mod))
             return String(mod) + "M"
         }else if count >= 1000{
             var mod = Int(count / 1000)

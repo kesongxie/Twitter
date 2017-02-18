@@ -36,23 +36,18 @@ class LogInViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.statusBarStyle = UIStatusBarStyle.lightContent
         self.scrollView.alwaysBounceVertical = true
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        App.postStatusBarShouldUpdateNotification(style: .lightContent)
     }
     
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-    
-    override var preferredStatusBarStyle: UIStatusBarStyle{
-        return self.statusBarStyle!
-    }
-    
-    override var preferredStatusBarUpdateAnimation: UIStatusBarAnimation{
-        return .fade
-    }
-    
 }
 
 

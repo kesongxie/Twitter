@@ -13,6 +13,8 @@ fileprivate let MaxIdkey = "max_id"
 fileprivate let ScreenNamekey = "screen_name"
 fileprivate let UserIdkey = "user_id"
 fileprivate let FetchSize = 40
+fileprivate let FetchFriendSize = 160
+
 
 struct Indices{
     let from: Int
@@ -33,6 +35,14 @@ class TwitterClient{
         case create
         case destroy
     }
+    
+    enum TweetFriendOption{
+        case followers
+        case following
+    }
+    
+    
+    
     static let TwitterClientDidDeAuthenticateNotificationName = Notification.Name("TwitterClientDidDeAuthenticateNotification")
     
     static let oAuthURLScheme = "twitter-codepath"
@@ -46,7 +56,6 @@ class TwitterClient{
     static let authUserEndPoint = oAuthBaseURL + "/1.1/account/verify_credentials.json"
     static let homeTimeLineEndPoint = oAuthBaseURL + "/1.1/statuses/home_timeline.json"
     static let userProfieTimeLineEndPoint = oAuthBaseURL + "/1.1/statuses/user_timeline.json"
-
     static let createFavorTweetEndPoint = oAuthBaseURL + "/1.1/favorites/create.json"
     static let destroyFavorTweetEndPoint = oAuthBaseURL + "/1.1/favorites/destroy.json"
     static let retweetCreateEndPoint = oAuthBaseURL + "/1.1/statuses/retweet/"
@@ -54,6 +63,10 @@ class TwitterClient{
     static let sendTweetEndPoint = oAuthBaseURL + "/1.1/statuses/update.json?status="
     static let friendShipLookUpEndPoint = oAuthBaseURL + "/1.1/friendships/lookup.json"
     static let favoritesListEndPoint = oAuthBaseURL + "/1.1/favorites/list.json"
+    static let followersEndPoint = oAuthBaseURL + "/1.1/followers/list.json"
+    static let followingEndPoint = oAuthBaseURL + "/1.1/friends/list.json"
+    static let mentionedEndPoint = oAuthBaseURL + "/1.1/statuses/mentions_timeline.json"
+
     
     static let shareInstance = BDBOAuth1SessionManager(baseURL: URL(string: TwitterClient.oAuthBaseURL), consumerKey: TwitterClient.consumerKey, consumerSecret: TwitterClient.consumerSecret)
     class func fetchAccessTokenWithURL(url: URL, success: @escaping (BDBOAuth1Credential?) -> Void, failure: @escaping (Error?) -> Void ){
@@ -113,6 +126,30 @@ class TwitterClient{
             callBack(nil, error)
         })
     }
+    
+        
+    /** Get the authenticated user mentioned timeline
+     */
+    class func getMentionedTimeLine(callBack: @escaping (_ response: [Tweet]?, _ error: Error? ) -> Void){
+        let fetchURLString = TwitterClient.mentionedEndPoint
+        let param: [String : Any] = [CountKey: FetchSize]
+        let _ = TwitterClient.shareInstance?.get(fetchURLString, parameters: param, progress: nil, success: { (task: URLSessionDataTask, response:Any?) in
+            if let timelineDict = response as? [[String: Any]]{
+                let tweets = timelineDict.map{(element) -> Tweet in
+                    return Tweet(tweetDict: element)
+                }
+                callBack(tweets, nil)
+            }
+        }, failure: { (task: URLSessionDataTask?, error:Error) in
+            print(error.localizedDescription)
+            callBack(nil, error)
+        })
+    }
+    
+    
+
+    
+
     
     class func getUserProfileTimeLine(userScreenName: String, callBack: @escaping (_ response: [Tweet]?, _ error: Error? ) -> Void){
         let fetchURLString = TwitterClient.userProfieTimeLineEndPoint
@@ -261,8 +298,34 @@ class TwitterClient{
     }
     
     
-    
-    
+    /** Get the user's followers or following based on option
+     */
+    class func getFriends(userScreenName: String, option: TweetFriendOption,  callBack: @escaping (_ response: [User]?, _ error: Error? ) -> Void ){
+        var url: String!
+        if option == .followers{
+            url = TwitterClient.followersEndPoint
+        }else{
+            url = TwitterClient.followingEndPoint
+        }
+        let param: [String: Any] = [ScreenNamekey: userScreenName, CountKey: FetchFriendSize]
+        let _ = TwitterClient.shareInstance?.get(url, parameters: param, progress: nil, success: {(task: URLSessionDataTask, response:Any?) in
+            guard let responseUsersDict = (response as? [String: Any])?["users"] else{
+                callBack(nil, nil)
+                return
+            }
+            guard  let userDicts = responseUsersDict as? [[String: Any]] else{
+                callBack(nil, nil)
+                return
+            }
+            let followers = userDicts.map({ (userDict) -> User in
+                return User(userDict: userDict)
+            })
+            callBack(followers, nil)
+        }, failure:{(task: URLSessionDataTask?, error:Error) in
+            print(error.localizedDescription)
+            callBack(nil, error)
+        })
+    }
     
     
 }

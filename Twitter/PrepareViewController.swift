@@ -19,23 +19,25 @@ class PrepareViewController: UIViewController {
     var statusBarStyle: UIStatusBarStyle = .lightContent
     
     
+    @IBOutlet weak var twitterBird: UIImageView!
+    
     @IBOutlet weak var loginContainerView: UIView!
+    @IBOutlet weak var homeContainerView: UIView!
     
     @IBOutlet weak var logoView: UIView!
     override func viewDidLoad() {
         super.viewDidLoad()
         NotificationCenter.default.addObserver(self, selector: #selector(navigateToHomeAfterLoggedIn(notification:)), name: AppDelegate.FinishedLogInNotificationName, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(failedToLogin(notification:)), name: AppDelegate.FailedToLogInNotificationName, object: nil)
-
         NotificationCenter.default.addObserver(self, selector: #selector(didLogout(notification:)), name: TwitterClient.TwitterClientDidDeAuthenticateNotificationName, object: nil)
         
+        NotificationCenter.default.addObserver(self, selector: #selector(statusBarShouldUpdate(notification:)), name: AppNotification.statusBarShouldUpdateNotificationName, object: nil)
+
+        
         if let _ = User.getCurrentUser(){
-            if let tabBarVC = App.mainStoryBoard.instantiateViewController(withIdentifier: StorybordIdentifier.TabBarViewControllerIden) as? TabBarViewController{
-                tabBarVC.transitioningDelegate = self
-                DispatchQueue.main.async {
-                    self.present(tabBarVC, animated: true, completion: nil)
-                }
-            }
+            self.zoomAnimate(completion: {
+                self.view.bringSubview(toFront: self.homeContainerView)
+            })
         }else{
             self.presentLogInVCIfNeeded()
         }
@@ -46,12 +48,45 @@ class PrepareViewController: UIViewController {
         // Dispose of any resources that can be recreated.
     }
     
+//    override func viewDidAppear(_ animated: Bool) {
+//        super.viewDidAppear(animated)
+//        let transform = CGAffineTransform(scaleX: 0.96, y: 0.96)
+//        UIView.animate(withDuration: 0.9, delay: 0.3, options: .curveEaseInOut, animations: {
+//            self.homeContainerView.transform = transform
+//        }, completion: nil)
+//    }
+    
+    
+    func zoomAnimate(completion completionHandler: @escaping (Void)-> Void){
+        let zoomOutTransfrom = CGAffineTransform(scaleX: 0.93, y: 0.93)
+        let zoomInTransfrom = CGAffineTransform(scaleX: 30, y: 30)
+        
+        UIView.animate(withDuration: 0.2, delay: 0, options: .curveEaseInOut, animations: {
+            self.twitterBird.transform = zoomOutTransfrom
+        }) { (finished) in
+            if finished{
+                UIView.animate(withDuration: 0.2, delay: 0.2, options: .curveEaseInOut, animations: {
+                    self.twitterBird.transform = zoomInTransfrom
+                }, completion: { (finished) in
+                    if finished{
+                        self.twitterBird.transform = .identity
+                        self.statusBarStyle = .default
+                        self.setNeedsStatusBarAppearanceUpdate()
+                        completionHandler()
+                    }
+                })
+            }
+        }
+    }
+    
+    
     func navigateToHomeAfterLoggedIn(notification: Notification){
         DispatchQueue.main.async {
-            if let tabBarVC = App.mainStoryBoard.instantiateViewController(withIdentifier: StorybordIdentifier.TabBarViewControllerIden) as? TabBarViewController{
-                tabBarVC.transitioningDelegate = self
-                self.present(tabBarVC, animated: true, completion: nil)
-            }
+            self.zoomAnimate(completion: {
+                let notification = Notification(name: AppNotification.homeTimeLineShouldRefreshNotificationName, object: self, userInfo: nil)
+                NotificationCenter.default.post(notification)
+                self.view.bringSubview(toFront: self.homeContainerView)
+            })
         }
     }
     
@@ -61,6 +96,13 @@ class PrepareViewController: UIViewController {
     
     func didLogout(notification: Notification){
         self.presentLogInVCIfNeeded()
+    }
+    
+    func statusBarShouldUpdate(notification: Notification){
+        if let statusBarStyle = notification.userInfo?[AppNotification.statusBarStyleKey] as? UIStatusBarStyle{
+            self.statusBarStyle = statusBarStyle
+            self.setNeedsStatusBarAppearanceUpdate()
+        }
     }
     
     func presentLogInVCIfNeeded(){
@@ -92,22 +134,22 @@ class PrepareViewController: UIViewController {
     
 }
 
-extension PrepareViewController: UIViewControllerTransitioningDelegate{
-    func animationController(forPresented presented: UIViewController, presenting: UIViewController, source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
-        self.statusBarStyle = UIStatusBarStyle.default
-        self.view.setNeedsLayout()
-        UIView.animate(withDuration: 0.3) {
-            self.view.layoutIfNeeded()
-            self.setNeedsStatusBarAppearanceUpdate()
-        }
-        return animator
-    }
-    
-    func animationController(forDismissed dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
-        return animator
-    }
-    
-}
+//extension PrepareViewController: UIViewControllerTransitioningDelegate{
+//    func animationController(forPresented presented: UIViewController, presenting: UIViewController, source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+//        self.statusBarStyle = UIStatusBarStyle.default
+//        self.view.setNeedsLayout()
+//        UIView.animate(withDuration: 0.3) {
+//            self.view.layoutIfNeeded()
+//            self.setNeedsStatusBarAppearanceUpdate()
+//        }
+//        return animator
+//    }
+//    
+//    func animationController(forDismissed dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+//        return animator
+//    }
+//    
+//}
 
 extension PrepareViewController: LogInViewControllerDelegate{
     func loginWithTwitterBtnTapped(controller: UIViewController) {

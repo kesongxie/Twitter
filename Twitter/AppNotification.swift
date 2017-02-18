@@ -13,5 +13,8 @@ struct  AppNotification{
     static let tweetDidSendTweetInfoKey = Notification.Name("Tweet")
     static let userProfileTappedNotificationName = Notification.Name("UserProfileTappedNotification")
     static let userProfileTappedUserKey = Notification.Name("User")
+    static let statusBarShouldUpdateNotificationName = Notification.Name("StatusBarShouldUpdateNotification")
+    static let statusBarStyleKey = Notification.Name("statusBarStyleKey")
+    static let homeTimeLineShouldRefreshNotificationName = Notification.Name("homeTimeLineShouldRefreshNotification")
 
 }

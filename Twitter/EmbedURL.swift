@@ -10,16 +10,17 @@
 class EmbedURL{
     var urlDict: [String: Any]?
     
-    
-    var indices: Indices?{
-        if let (first, second) = self.urlDict?["indices"] as? (Int, Int){
-            return Indices(from: first, to: second)
-        }
-        return nil
+    var urlString: String?{
+        return self.urlDict?["url"] as? String
     }
     
-    var urlString: String!{
-        return self.urlDict?["url"] as! String
+    var displayUrl: String?{
+        return self.urlDict?["display_url"] as? String
+    }
+    
+    
+    var expandedUrl: String?{
+        return self.urlDict?["expanded_url"] as? String
     }
     
     init(urlDict: [String: Any]?) {

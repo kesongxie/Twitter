@@ -8,6 +8,7 @@
 
 import UIKit
 
+
 class PhotoPreviewViewController: UIViewController {
 
     @IBOutlet weak var scrollView: UIScrollView!{

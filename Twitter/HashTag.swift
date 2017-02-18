@@ -9,14 +9,6 @@
 class HashTag{
     var tagDict: [String: Any]?
     
-    
-    var indices: Indices?{
-        if let (first, second) = self.tagDict?["indices"] as? (Int, Int){
-            return Indices(from: first, to: second)
-        }
-        return nil
-    }
-    
     var text: String!{
         return self.tagDict?["text"] as! String
     }

@@ -10,4 +10,8 @@
 struct SegueIdentifier{
     static let showTweetDetail = "ShowTweetDetail"
     static let composePresentation = "ComposePresentation"
+    static let ShowWebSegueIden = "ShowWeb"
+    static let ShowFollowersSegueIden = "ShowFollowers"
+    static let ShowFollowingSegueIden = "ShowFollowing"
+
 }

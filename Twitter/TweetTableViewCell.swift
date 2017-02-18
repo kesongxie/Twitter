@@ -19,7 +19,7 @@ class TweetTableViewCell: UITableViewCell {
     
     @IBOutlet weak var userImageView: UIImageView!{
         didSet{
-            self.userImageView.layer.cornerRadius = 4.0
+            self.userImageView.layer.cornerRadius = App.Style.userProfileAvatorCornerRadius
             self.userImageView.clipsToBounds = true
             self.userImageView.isUserInteractionEnabled = true
             //tap for userImageView

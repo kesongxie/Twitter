@@ -26,8 +26,10 @@ extension UILabel{
         //style links
         if let urls = tweet.embedURLs{
             for url in urls{
-                let range = (tweet.text as NSString).range(of: url.urlString)
-                attributedTweetText.addAttribute(NSForegroundColorAttributeName, value: App.themeColor , range: range)
+                if let urlString = url.urlString{
+                    let range = (tweet.text as NSString).range(of: urlString)
+                    attributedTweetText.addAttribute(NSForegroundColorAttributeName, value: App.themeColor , range: range)
+                }
             }
         }
         

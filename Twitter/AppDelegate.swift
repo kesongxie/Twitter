@@ -75,12 +75,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                     if let user = user{
                         self.currentUser = user
                         self.currentUser!.saveCurrentUserData()
-                        TwitterClient.getHomeTimeLine(callBack: {(tweets, error) in
-                            self.currentUser?.timeline = tweets
-                            let user = [AppDelegate.FinishedLogInUserInfoKey: self.currentUser]
-                            let finishedLogInNotification = Notification(name: AppDelegate.FinishedLogInNotificationName, object: self, userInfo: user)
-                            NotificationCenter.default.post(finishedLogInNotification)
-                        })
+                        let user = [AppDelegate.FinishedLogInUserInfoKey: self.currentUser]
+                        let finishedLogInNotification = Notification(name: AppDelegate.FinishedLogInNotificationName, object: self, userInfo: user)
+                        NotificationCenter.default.post(finishedLogInNotification)
                     }
                 })
             },

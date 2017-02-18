@@ -84,11 +84,7 @@ class TweetDetailViewController: UIViewController {
             }
         }
     }
-    var tweet: Tweet!{
-        didSet{
-            print(tweet.entitiesDict)
-        }
-    }
+    var tweet: Tweet!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -98,6 +94,11 @@ class TweetDetailViewController: UIViewController {
         }
     }
 
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        App.postStatusBarShouldUpdateNotification(style: .default)
+        self.navigationController?.isNavigationBarHidden = false;
+    }
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.

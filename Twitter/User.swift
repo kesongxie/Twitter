@@ -72,6 +72,27 @@ class User{
         return  Ultility.stringifyCount(count: followerCount)
     }
     
+    var location: String?{
+        return self.userDict["location"] as? String
+    }
+    
+    var entitiesDict: [String: Any]?{
+        return self.userDict?["entities"] as? [String: Any]
+    }
+    var embedURLs: EmbedURL?{
+        guard let entitiesDict = self.entitiesDict else{
+            return nil
+        }
+        guard let urls = entitiesDict["url"] as? [String: Any] else{
+            return nil
+        }
+        guard let urlDict = (urls["urls"] as? [[String: Any]])?.first else{
+            return nil
+        }
+        return EmbedURL(urlDict: urlDict)
+    }
+
+    
     init(userDict: [String: Any]) {
         self.userDict = userDict
         self.id = userDict["id"] as? UInt
