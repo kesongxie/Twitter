@@ -23,12 +23,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
     var currentUser: User?{
         didSet{
-            if accounts.isEmpty{
-                self.accounts.append(self.currentUser!)
-            }else{
-                if let index = self.accounts.index(where: {$0.screen_name == self.currentUser!.screen_name}){
-                    self.accounts.remove(at: index)
-                    self.accounts.insert(self.currentUser!, at: 0)
+            if currentUser != nil{
+                if accounts.isEmpty{
+                    self.accounts.append(self.currentUser!)
+                }else{
+                    if let index = self.accounts.index(where: {$0.screen_name == self.currentUser!.screen_name}){
+                        self.accounts.remove(at: index)
+                        self.accounts.insert(self.currentUser!, at: 0)
+                    }
                 }
             }
         }
@@ -67,6 +69,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     //response to the url open and bring the user back to our app duraing the oAuth process
     func application(_ app: UIApplication, open url: URL, options: [UIApplicationOpenURLOptionsKey : Any] = [:]) -> Bool {
+        
+        print("User clicked either login or cancel in the safari, and the url it returns: which included the request token \(url)")
+
         TwitterClient.fetchAccessTokenWithURL(
             url: url,
             success: {(credential: BDBOAuth1Credential?) in

@@ -9,11 +9,12 @@
 import Foundation
 
 class Ultility: NSObject {
+    //Tuesdya aug 20 21:30:429 +000 tc
     class func agoString(from UTCDateTimeString: String) -> String{
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "EEE MMM d HH:mm:ss Z y"
         if let date = dateFormatter.date(from: UTCDateTimeString){
-            return Ultility.ago(fromDate: date)
+            return Ultility.ago(fromDate: date) //3h ago
         }else{
             return ""
         }

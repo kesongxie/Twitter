@@ -147,7 +147,13 @@ class User{
         return nil
     }
     
-    
+    class func deAuthenticate(){
+        TwitterClient.shareInstance?.deauthorize()
+        UserDefaults.standard.removeObject(forKey: currentUserKey)
+        App.delegate?.currentUser = nil
+        let notification = Notification(name: TwitterClient.TwitterClientDidDeAuthenticateNotificationName, object: self, userInfo: nil)
+        NotificationCenter.default.post(notification)
+    }
 
 }
 

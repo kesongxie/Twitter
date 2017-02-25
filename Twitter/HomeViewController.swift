@@ -61,7 +61,9 @@ class HomeViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         self.navigationController?.isNavigationBarHidden = false
-        App.postStatusBarShouldUpdateNotification(style: .default)
+        if App.delegate?.currentUser != nil{
+            App.postStatusBarShouldUpdateNotification(style: .default)
+        }
     }
     
     
@@ -160,8 +162,6 @@ class HomeViewController: UIViewController {
             }
         }
     }
-    
-
 }
 
 extension HomeViewController: UITableViewDelegate, UITableViewDataSource{

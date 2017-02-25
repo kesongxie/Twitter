@@ -6,6 +6,16 @@
 //  Copyright © 2017 ___KesongXie___. All rights reserved.
 //
 
+
+/*
+ callback url scheme from login with twitterOptional(twitter-codepath://oauth)
+ reuqest token required to open twitter login in safari after issue fetch reuqest tokenOptional("euqjJAAAAAAAyzQYAAABWmPNLnE")
+ User clicked either login or cancel in the safari, and the url it returns: which incluedes request token twitter-codepath://oauth?oauth_token=euqjJAAAAAAAyzQYAAABWmPNLnE&oauth_verifier=i548MTYalFAjkR5EN1qqtY0U0636DBjd
+ fetchAccessTokenWithURL: url query: Optional("oauth_token=euqjJAAAAAAAyzQYAAABWmPNLnE&oauth_verifier=i548MTYalFAjkR5EN1qqtY0U0636DBjd")
+ request token from Optional("euqjJAAAAAAAyzQYAAABWmPNLnE")
+
+ */
+
 import BDBOAuth1Manager
 
 fileprivate let CountKey = "count"
@@ -25,7 +35,7 @@ struct Indices{
     }
 }
 
-class TwitterClient{
+class TwitterClient: NSObject{
     enum FavorToggleOption{
         case create
         case destroy
@@ -69,9 +79,29 @@ class TwitterClient{
 
     
     static let shareInstance = BDBOAuth1SessionManager(baseURL: URL(string: TwitterClient.oAuthBaseURL), consumerKey: TwitterClient.consumerKey, consumerSecret: TwitterClient.consumerSecret)
+    
+    class func logInWithTwitter(){
+        TwitterClient.shareInstance?.deauthorize()
+        //when the fetchRequestToken succeed, then it will redirects to the callback URL
+        let callbackURL = URL(string: "\(TwitterClient.oAuthURLScheme)://\(TwitterClient.oAuthURLHost)")
+        print("callback url scheme from login with twitter\(callbackURL)")
+        TwitterClient.shareInstance?.fetchRequestToken(withPath: TwitterClient.requestTokenPath, method: "POST", callbackURL: callbackURL, scope: nil, success: { (credential: BDBOAuth1Credential?) in
+            if let credential = credential{
+                if let authorizeURL = URL(string: TwitterClient.oAuthBaseURL + "/" + TwitterClient.authorizePath + "?oauth_token=\(credential.token!)"){
+                    print("reuqest token required to open twitter login in safari after issue fetch reuqest token\(credential.token)")
+                    UIApplication.shared.open(authorizeURL)
+                }
+            }
+        }, failure: {(error: Error?) in
+            print("failure: \(error?.localizedDescription)")
+        })
+    }
+
     class func fetchAccessTokenWithURL(url: URL, success: @escaping (BDBOAuth1Credential?) -> Void, failure: @escaping (Error?) -> Void ){
         if url.scheme == TwitterClient.oAuthURLScheme && url.host == TwitterClient.oAuthURLHost {
+            print("fetchAccessTokenWithURL: url query: \(url.query)")
             let requestToken = BDBOAuth1Credential(queryString: url.query)
+            print("request token from \(requestToken?.token)")
             let twitterClient = TwitterClient.shareInstance
             twitterClient?.fetchAccessToken(withPath: TwitterClient.accessTokenPath,
                                             method: "POST",
@@ -84,19 +114,6 @@ class TwitterClient{
         }
    }
     
-    class func logInWithTwitter(){
-        TwitterClient.shareInstance?.deauthorize()
-        let callbackURL = URL(string: "\(TwitterClient.oAuthURLScheme)://\(TwitterClient.oAuthURLHost)")
-        TwitterClient.shareInstance?.fetchRequestToken(withPath: TwitterClient.requestTokenPath, method: "POST", callbackURL: callbackURL, scope: nil, success: { (credential: BDBOAuth1Credential?) in
-            if let credential = credential{
-                if let authorizeURL = URL(string: TwitterClient.oAuthBaseURL + "/" + TwitterClient.authorizePath + "?oauth_token=\(credential.token!)"){
-                    UIApplication.shared.open(authorizeURL)
-                }
-            }
-        }, failure: {(error: Error?) in
-            print("failure: \(error?.localizedDescription)")
-        })
-    }
     
     class func getUserProfile(callBack: @escaping (_ response: User?, _ error: Error? ) -> Void){
         let _ = TwitterClient.shareInstance?.get(TwitterClient.authUserEndPoint, parameters: nil, progress: nil, success: { (task: URLSessionDataTask, response:Any?) in
@@ -146,11 +163,7 @@ class TwitterClient{
         })
     }
     
-    
 
-    
-
-    
     class func getUserProfileTimeLine(userScreenName: String, callBack: @escaping (_ response: [Tweet]?, _ error: Error? ) -> Void){
         let fetchURLString = TwitterClient.userProfieTimeLineEndPoint
         let param: [String : Any] = [CountKey: FetchSize, ScreenNamekey: userScreenName]

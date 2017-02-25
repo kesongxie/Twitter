@@ -171,6 +171,8 @@ class TweetTableViewCell: UITableViewCell {
         }else{
             self.retweetIconImageView.image = UIImage(named: "retweet-icon")
         }
+        
+        
     }
     
     

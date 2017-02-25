@@ -56,35 +56,43 @@ class NotificationViewController: UIViewController {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if  let iden = segue.identifier{
+            if iden == SegueIdentifier.showTweetDetail{
+                guard let tweetDetailVC = segue.destination as? TweetDetailViewController else{
+                    return
+                }
+                guard let selectedIndexPath = sender as? IndexPath else{
+                    return
+                }
+                
+                guard let selectedTweet = self.tweets?[selectedIndexPath.row] else{
+                    return
+                }
+                tweetDetailVC.tweet = selectedTweet
+            }
+        }
+
+    }
 }
 
 
 extension NotificationViewController: UITableViewDelegate, UITableViewDataSource{
     func numberOfSections(in tableView: UITableView) -> Int {
-        return self.tweets?.count ?? 0
+        return 1
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 1
+        return self.tweets?.count ?? 0
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: reuseIden, for: indexPath) as! TweetTableViewCell
-        cell.tweet = self.tweets![indexPath.section]
+        cell.tweet = self.tweets![indexPath.row]
         cell.delegate = self
         return cell
     }
-//    
-//    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-//        let header = tableView.dequeueReusableCell(withIdentifier: notificationSectionHeaderReuseIden) as! SectionHeaderTableViewCell
-//        return header
-//    }
-//    
-//    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-//        return 30
-//    }
-
-    
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         self.performSegue(withIdentifier: SegueIdentifier.showTweetDetail, sender: indexPath)

@@ -70,6 +70,18 @@ class ProfileTableViewController: UITableViewController {
         let _ = self.navigationController?.popViewController(animated: true)
     }
     
+    @IBAction func settingBtnTapped(_ sender: UIButton) {
+        let alert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+        let logOutAction = UIAlertAction(title: "Log Out", style: .default, handler: {
+            alertAction in
+            self.logOut()
+        })
+        
+        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
+        alert.addAction(logOutAction)
+        alert.addAction(cancelAction)
+        self.present(alert, animated: true, completion: nil)
+    }
     //location
     @IBOutlet weak var locationIconBtn: UIButton!
     @IBOutlet weak var locationStackView: UIStackView!
@@ -78,6 +90,9 @@ class ProfileTableViewController: UITableViewController {
     @IBOutlet weak var segmentControl: UISegmentedControl!
     @IBOutlet weak var downArrowImageView: UIImageView!
     @IBOutlet weak var accountBtnWidthConstraint: NSLayoutConstraint!
+    @IBOutlet weak var locationStackViewHeightConstraint: NSLayoutConstraint!
+    @IBOutlet weak var lnikStackViewHeightConstraint: NSLayoutConstraint!
+    
     weak var delegate: ProfileTableViewControllerDelegate?
     
     var bannerOriginalHeight: CGFloat = 0
@@ -101,18 +116,18 @@ class ProfileTableViewController: UITableViewController {
         }
     }
     
-    var user: User? = App.delegate?.currentUser{
+    var user: User! = App.delegate?.currentUser{
         didSet{
-            self.isUsingCurrentUser = !(self.user?.screen_name != App.delegate?.currentUser?.screen_name)
+            self.isUsingCurrentUser = !(self.user.screen_name != App.delegate?.currentUser?.screen_name)
         }
     }
-        @IBOutlet weak var settingIcon: UIButton!
+    @IBOutlet weak var settingIcon: UIButton!
 
     var isUsingCurrentUser = true
     
     var isPresented = false
     var isViewDidAppear = false
-    lazy var context = CIContext()
+    var context = CIContext()
     var filter: CIFilter!
     var ciImage: CIImage?
     
@@ -133,10 +148,16 @@ class ProfileTableViewController: UITableViewController {
         self.tableView.estimatedRowHeight = self.tableView.rowHeight
         self.tableView.rowHeight = UITableViewAutomaticDimension
         
+        
+        if self.user == nil{
+            self.user = App.delegate?.currentUser
+        }
+        
         //update UI based on th current profile user
         guard let user = self.user else{
             return
         }
+        
         if let bannerURL = user.profileBannerURL{
             let urlRequest = URLRequest(url: bannerURL)
             self.bannerImageView.setImageWith(urlRequest, placeholderImage: nil, success: { (request, response, image) in
@@ -150,10 +171,10 @@ class ProfileTableViewController: UITableViewController {
         }
         
         if let location = user.location, !location.trimmingCharacters(in:NSCharacterSet.whitespacesAndNewlines).isEmpty{
-            print(location)
             self.locationIconBtn.setTitle(location, for: .normal)
         }else{
             //location not set
+            self.locationStackViewHeightConstraint.constant = 0
             self.locationStackView.isHidden = true
         }
         
@@ -162,6 +183,7 @@ class ProfileTableViewController: UITableViewController {
             self.linkIconBtn.setTitle(displayUrl, for: .normal)
         }else{
             //location not set
+            self.lnikStackViewHeightConstraint.constant = 0
             self.linkStackView.isHidden = true
         }
         
@@ -209,17 +231,19 @@ class ProfileTableViewController: UITableViewController {
         if scrollView.contentOffset.y <= 0{
             self.topSpaceConstraint.constant = scrollView.contentOffset.y
             self.bannerHeightConstraint.constant = self.bannerOriginalHeight - scrollView.contentOffset.y
-            self.filter.setValue(-scrollView.contentOffset.y * 0.1, forKey: "inputRadius")
             if !self.isAnimating{
                 self.downArrowImageView.alpha = min(1, -scrollView.contentOffset.y * 0.02)
             }
-            guard let outputImage = filter.outputImage, let ciImage = self.ciImage else{
-                return
-            }
-            if let cgimg = context.createCGImage(outputImage, from: ciImage.extent) {
-                let blurImage = UIImage(cgImage: cgimg)
-                self.bannerImageView.image = blurImage
-            }
+            
+//            self.filter.setValue(-scrollView.contentOffset.y * 0.01, forKey: "inputRadius")
+//            guard let outputImage = filter.outputImage, let ciImage = self.ciImage else{
+//                return
+//            }
+//            if let cgimg = context.createCGImage(outputImage, from: ciImage.extent) {
+//                let blurImage = UIImage(cgImage: cgimg)
+//                self.bannerImageView.image = blurImage
+//                
+//            }
         }
     }
     
@@ -333,13 +357,10 @@ class ProfileTableViewController: UITableViewController {
     }
 
     
-    func logoutBtnTapped(sender: UIBarButtonItem){
-        UserDefaults.resetStandardUserDefaults()
-        TwitterClient.shareInstance?.deauthorize()
-        self.dismiss(animated: true, completion: {
-            let logOutNotification = Notification(name: TwitterClient.TwitterClientDidDeAuthenticateNotificationName, object: self, userInfo: nil)
-            NotificationCenter.default.post(logOutNotification)
-        })
+    func logOut(){
+        User.deAuthenticate()
+        self.tabBarController?.selectedIndex = 0
+        App.postStatusBarShouldUpdateNotification(style: .lightContent)
     }
     
     /** load user's home timeline

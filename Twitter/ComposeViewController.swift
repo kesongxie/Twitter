@@ -52,8 +52,9 @@ class ComposeViewController: UIViewController {
                         let userInfo = [AppNotification.tweetDidSendTweetInfoKey: tweet]
                         let didTweetNotification = Notification(name: AppNotification.tweetDidSendNotificationName, object: self, userInfo: userInfo)
                         NotificationCenter.default.post(didTweetNotification)
-                        self.dismiss(animated: true, completion: nil)
                     }
+                    self.dismiss(animated: true, completion: nil)
+
                 }
             })
         }

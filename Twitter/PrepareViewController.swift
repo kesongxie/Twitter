@@ -48,13 +48,7 @@ class PrepareViewController: UIViewController {
         // Dispose of any resources that can be recreated.
     }
     
-//    override func viewDidAppear(_ animated: Bool) {
-//        super.viewDidAppear(animated)
-//        let transform = CGAffineTransform(scaleX: 0.96, y: 0.96)
-//        UIView.animate(withDuration: 0.9, delay: 0.3, options: .curveEaseInOut, animations: {
-//            self.homeContainerView.transform = transform
-//        }, completion: nil)
-//    }
+
     
     
     func zoomAnimate(completion completionHandler: @escaping (Void)-> Void){

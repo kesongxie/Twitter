@@ -31,7 +31,7 @@ class WebViewController: UIViewController {
     var urlRequest: URLRequest!
         
     @IBAction func backBtnTapped(_ sender: UIBarButtonItem) {
-        self.navigationController?.popViewController(animated: true)
+        let _ = self.navigationController?.popViewController(animated: true)
     }
     lazy var timer = Timer()
     var isWebFinishLoading = false
