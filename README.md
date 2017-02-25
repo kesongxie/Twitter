@@ -48,6 +48,27 @@ The following **additional** features are implemented:
 - [x] Added tabbar 
 - [x] Added media to tweet
 - [x] Added Following, Edit Profile button based upon the relationship with the profile user
+- [x] Added Followers in user's profile
+- [x] Added Followings in user's profile
+- [x] Notification Center
+- [x] Messages
+- [x] Profile links in user's profile using WebView
+- [x] Implemnted web view progressing bar
+- [x] Style mentioneds, hashTags, links using NSAttributedString
+- [x] Added media filter in the user's profile(see only the tweets with media)
+- [x] Added the likes filter showing the tweets that the user likes
+- [x] Added Media preview in the and zoom
+- [x] Implmented the Twitter introduction scale effect
+
+
+
+
+
+
+
+
+
+
 
 Please list two areas of the assignment you'd like to **discuss further with your peers** during the next class (examples include better ways to implement something, how to extend your app in certain ways, etc):
 
