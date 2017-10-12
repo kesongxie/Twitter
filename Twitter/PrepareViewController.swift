@@ -51,7 +51,7 @@ class PrepareViewController: UIViewController {
 
     
     
-    func zoomAnimate(completion completionHandler: @escaping (Void)-> Void){
+    func zoomAnimate(completion completionHandler: @escaping () -> Void){
         let zoomOutTransfrom = CGAffineTransform(scaleX: 0.93, y: 0.93)
         let zoomInTransfrom = CGAffineTransform(scaleX: 30, y: 30)
         

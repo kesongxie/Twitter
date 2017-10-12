@@ -84,24 +84,20 @@ class TwitterClient: NSObject{
         TwitterClient.shareInstance?.deauthorize()
         //when the fetchRequestToken succeed, then it will redirects to the callback URL
         let callbackURL = URL(string: "\(TwitterClient.oAuthURLScheme)://\(TwitterClient.oAuthURLHost)")
-        print("callback url scheme from login with twitter\(callbackURL)")
         TwitterClient.shareInstance?.fetchRequestToken(withPath: TwitterClient.requestTokenPath, method: "POST", callbackURL: callbackURL, scope: nil, success: { (credential: BDBOAuth1Credential?) in
             if let credential = credential{
                 if let authorizeURL = URL(string: TwitterClient.oAuthBaseURL + "/" + TwitterClient.authorizePath + "?oauth_token=\(credential.token!)"){
-                    print("reuqest token required to open twitter login in safari after issue fetch reuqest token\(credential.token)")
                     UIApplication.shared.open(authorizeURL)
                 }
             }
         }, failure: {(error: Error?) in
-            print("failure: \(error?.localizedDescription)")
+            print(error?.localizedDescription ?? "")
         })
     }
 
     class func fetchAccessTokenWithURL(url: URL, success: @escaping (BDBOAuth1Credential?) -> Void, failure: @escaping (Error?) -> Void ){
         if url.scheme == TwitterClient.oAuthURLScheme && url.host == TwitterClient.oAuthURLHost {
-            print("fetchAccessTokenWithURL: url query: \(url.query)")
             let requestToken = BDBOAuth1Credential(queryString: url.query)
-            print("request token from \(requestToken?.token)")
             let twitterClient = TwitterClient.shareInstance
             twitterClient?.fetchAccessToken(withPath: TwitterClient.accessTokenPath,
                                             method: "POST",

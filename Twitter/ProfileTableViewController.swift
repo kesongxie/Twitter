@@ -147,7 +147,7 @@ class ProfileTableViewController: UITableViewController {
         self.tableView.register(nib, forCellReuseIdentifier: reuseIden)
         self.tableView.estimatedRowHeight = self.tableView.rowHeight
         self.tableView.rowHeight = UITableViewAutomaticDimension
-        
+        self.tableView.contentInsetAdjustmentBehavior = .never
         
         if self.user == nil{
             self.user = App.delegate?.currentUser
@@ -204,7 +204,7 @@ class ProfileTableViewController: UITableViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         if !self.isViewDidAppear{
-            self.bannerOriginalHeight = self.headerView.frame.size.width /  App.bannerAspectRatio
+            self.bannerOriginalHeight = UIScreen.main.bounds.size.width /  App.bannerAspectRatio
             self.bannerHeightConstraint.constant = self.bannerOriginalHeight
         }
         App.postStatusBarShouldUpdateNotification(style: .lightContent)
@@ -217,8 +217,6 @@ class ProfileTableViewController: UITableViewController {
             self.isViewDidAppear = true
             self.tableView.setAndLayoutTableHeaderView(header: self.headerView)
         }
-
-        
     }
     
     
@@ -227,6 +225,8 @@ class ProfileTableViewController: UITableViewController {
         // Dispose of any resources that can be recreated.
     }
     
+    var isCreatingImage: Bool = false
+    
     override func scrollViewDidScroll(_ scrollView: UIScrollView) {
         if scrollView.contentOffset.y <= 0{
             self.topSpaceConstraint.constant = scrollView.contentOffset.y
@@ -234,16 +234,18 @@ class ProfileTableViewController: UITableViewController {
             if !self.isAnimating{
                 self.downArrowImageView.alpha = min(1, -scrollView.contentOffset.y * 0.02)
             }
-            
-//            self.filter.setValue(-scrollView.contentOffset.y * 0.01, forKey: "inputRadius")
-//            guard let outputImage = filter.outputImage, let ciImage = self.ciImage else{
-//                return
-//            }
-//            if let cgimg = context.createCGImage(outputImage, from: ciImage.extent) {
-//                let blurImage = UIImage(cgImage: cgimg)
-//                self.bannerImageView.image = blurImage
-//                
-//            }
+            self.filter.setValue(-scrollView.contentOffset.y * 0.1, forKey: "inputRadius")
+            guard let outputImage = filter.outputImage, let ciImage = self.ciImage else{
+                return
+            }
+            DispatchQueue.global(qos: .userInitiated).async {
+                if let cgimg = self.context.createCGImage(outputImage, from: ciImage.extent) {
+                    DispatchQueue.main.async {
+                        let blurImage = UIImage(cgImage: cgimg)
+                        self.bannerImageView.image = blurImage
+                    }
+                }
+            }
         }
     }
     
@@ -365,7 +367,7 @@ class ProfileTableViewController: UITableViewController {
     
     /** load user's home timeline
      */
-    func loadData(completion completionHandlder:  ((Void) -> Void)? ){
+    func loadData(completion completionHandlder:  (() -> Void)? ){
         guard let user = self.user else{
             return
         }
